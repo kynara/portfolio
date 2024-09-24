@@ -1,3 +1,9 @@
+/*
+* This concept was originally from Coding Train: https://www.youtube.com/watch?v=Bxdt6T_1qgc&t=786s
+* and adapted by me for react-p5
+*/
+
+
 import * as p5 from "p5";
 
 export class Vehicle {
