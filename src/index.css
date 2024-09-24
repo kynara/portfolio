@@ -7,7 +7,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+@font-face {
+  font-family: 'SuperFoods'; /* Name your font family */
+  src: url('../public/fonts/super-foods-font/SuperFoods-2OxXo.ttf'); /* Locate the .ttf file within your directory*/
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+    monospace, 'SuperFoods';
 }
