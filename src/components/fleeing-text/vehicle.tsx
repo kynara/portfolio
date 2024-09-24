@@ -15,8 +15,8 @@ export class Vehicle {
         this.vel = p5.Vector.random2D();
         this.acc = p.createVector();
         this.r = 8;
-        this.maxspeed = 10;
-        this.maxforce = 1;
+        this.maxspeed = 20;
+        this.maxforce = 10;
     }
 
     behaviors(p: p5) {
@@ -27,8 +27,6 @@ export class Vehicle {
         var mouse = p.createVector(p.mouseX, p.mouseY);
         var flee = this.flee(mouse, p);
         this.applyForce(flee, p);
-
-
     }
 
     applyForce(f: p5.Vector, p: p5) {
@@ -52,7 +50,7 @@ export class Vehicle {
         var desired = p5.Vector.sub(target, this.pos);
         var d = desired.mag();
         var speed = this.maxspeed;
-        if (d < 100) {
+        if (d < 300) {
             speed = p.map(d, 0, 100, 0, this.maxspeed);
         }
         desired.setMag(speed);
@@ -64,7 +62,7 @@ export class Vehicle {
     flee(target: p5.Vector, p: p5) {
         var desired = p5.Vector.sub(target, this.pos);
         var d = desired.mag();
-        if (d < 100) {
+        if (d < 300) {
             desired.setMag(this.maxspeed);
             desired.mult(-1);
             var steer = p5.Vector.sub(desired, this.vel);
