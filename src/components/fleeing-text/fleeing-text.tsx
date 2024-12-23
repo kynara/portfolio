@@ -11,11 +11,28 @@ export const FleeingText: React.FC<FleeingTextProps> = (props: FleeingTextProps)
     let font: p5Types.Font;
     let vehicles: Vehicle[] = [];
 
+    let fontSize = 250;
+
+    let textWidth;
+
     let points: any[] = [];
 
     const preload = (p5: p5Types) => {
+        console.log("HERE")
+
         font = p5.loadFont('./fonts/super-normal-font/SuperNormal-xRoj5.ttf');
+        let temp = font.textBounds(props.text, 0, 0, fontSize);
+
+        console.log(temp)
+        // @ts-ignore
+        textWidth = temp.w;
+        console.log(textWidth)
+
     };
+
+    let textStartWidth = window.innerWidth/2-438;
+    let textStartHeight = window.outerHeight/2;
+
 
     const isGoodPt = (x: number, y: any, p5:p5Types) => {
         for(let i = -2; i < 3; i++) {
@@ -33,12 +50,12 @@ export const FleeingText: React.FC<FleeingTextProps> = (props: FleeingTextProps)
 
 
         p5.textFont(font);
-        p5.textSize(250);
+        p5.textSize(fontSize);
         p5.fill("#F0CF65");
         p5.noStroke();
-        p5.text(props.text, window.innerWidth/2-438, window.outerHeight/2);
+        p5.text(props.text, 0, 500);
 
-        let outlinepts = font.textToPoints(props.text, window.innerWidth/2-438, window.outerHeight/2, 250, {
+        let outlinepts = font.textToPoints(props.text, 0, 0, fontSize, {
             sampleFactor: 0.1
         });
 
@@ -55,12 +72,12 @@ export const FleeingText: React.FC<FleeingTextProps> = (props: FleeingTextProps)
         }
 
         let factor = 5;
-        for (let y = 205; y < 415; y += factor) {
-            for (let x = 250; x < 1400; x += factor){
+        for (let y = 0; y < 750; y += factor) {
+            for (let x = 0; x < 1700; x += factor){
                 let tempx = x + p5.random(0, factor), tempy = y + p5.random(0, factor);
                 if (isGoodPt(tempx, tempy, p5)) {
                     points.push({x: tempx, y: tempy});
-                    let vehicle = new Vehicle(p5, tempx, tempy);
+                    let vehicle = new Vehicle(p5, tempx, tempy-500);
                     vehicles.push(vehicle);
                     p5.stroke(255);
                     p5.strokeWeight(5);
@@ -71,16 +88,16 @@ export const FleeingText: React.FC<FleeingTextProps> = (props: FleeingTextProps)
     };
 
     const draw = (p5: p5Types) => {
-        p5.textSize(250);
+        p5.textSize(fontSize);
         p5.background('#DDEDAA');
         p5.noStroke();
-        p5.text(props.text, window.innerWidth/2-438, window.outerHeight/2);
+        p5.text(props.text, textStartWidth, textStartHeight);
 
         for (let i = 0; i < vehicles.length; i++) {
             let v = vehicles[i];
-            v.behaviors(p5);
+            v.behaviors(p5,textStartWidth,textStartHeight);
             v.update(p5);
-            v.show(p5);
+            v.show(p5,textStartWidth,textStartHeight);
         }
     };
 

@@ -25,12 +25,12 @@ export class Vehicle {
         this.maxforce = 10;
     }
 
-    behaviors(p: p5) {
+    behaviors(p: p5, w: number, h: number) {
         var arrive = this.arrive(this.target, p);
         arrive.mult(1);
         this.applyForce(arrive, p);
 
-        var mouse = p.createVector(p.mouseX, p.mouseY);
+        var mouse = p.createVector(p.mouseX-w, p.mouseY-h);
         var flee = this.flee(mouse, p);
         this.applyForce(flee, p);
     }
@@ -45,10 +45,10 @@ export class Vehicle {
         this.acc.mult(0);
     }
 
-    show(p: p5) {
+    show(p: p5, w: number, h: number) {
         p.stroke("#875053");
         p.strokeWeight(this.r);
-        p.point(this.pos.x, this.pos.y);
+        p.point(this.pos.x+w, this.pos.y+h);
     }
 
 
