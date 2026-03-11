@@ -62,12 +62,12 @@
   -webkit-user-drag: none;
 }
 
-/* ── Mouth click target — 1/4 size, centered at 50%/50% ─ */
+/* ── Mouth click target — 1/4 width, bottom 2/3 of center ─ */
 .landing__mouth-target {
   position: absolute;
   width: 25%;
-  height: 25%;
-  top: 37.5%;
+  height: 16.67%;
+  top: 45.83%;
   left: 37.5%;
   background: transparent;
   border: none;

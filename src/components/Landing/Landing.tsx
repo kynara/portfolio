@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Landing.css';
 
@@ -7,18 +7,9 @@ type Phase = 'idle' | 'hover' | 'clicked';
 const Landing: React.FC = () => {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>('idle');
-  const faceRef = useRef<HTMLDivElement>(null);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (phase === 'clicked') return;
-    const face = faceRef.current;
-    if (!face) return;
-    const rect = face.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
-    const threshold = Math.max(rect.width, rect.height) * 0.65;
-    setPhase(dist < threshold ? 'hover' : 'idle');
+  const handleMouseEnter = useCallback(() => {
+    if (phase !== 'clicked') setPhase('hover');
   }, [phase]);
 
   const handleMouseLeave = useCallback(() => {
@@ -37,16 +28,13 @@ const Landing: React.FC = () => {
     :                     '/images/pre-eat-close-mouth.png';
 
   return (
-    <div
-      className={`landing landing--${phase}`}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
+    <div className={`landing landing--${phase}`}>
       <div className="landing__circle" />
 
       <div
-        ref={faceRef}
         className={`landing__face ${phase === 'clicked' ? 'landing__face--shrink' : ''}`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         <img
           src={imgSrc}
