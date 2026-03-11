@@ -1,15 +1,21 @@
 import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Landing from './components/Landing/Landing';
+import Home from './components/Home/Home';
+import Blog from './components/Blog/Blog';
+import Resume from './components/Resume/Resume';
 import './App.css';
-import {FleeingText} from "./components/fleeing-text/fleeing-text";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <FleeingText text={"kynara"}/>
-
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/resume" element={<Resume />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

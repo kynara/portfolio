@@ -1,0 +1,53 @@
+.page {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.page--blog   { background: #0d0d1a; }
+.page--resume { background: #001a12; }
+
+.page__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  animation: fadeSlideUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.page__title {
+  font-family: 'SuperCereal', 'SuperFoods', sans-serif;
+  font-size: clamp(3rem, 10vw, 6rem);
+  color: #ff6b9d;
+  letter-spacing: 0.02em;
+}
+
+.page__status {
+  font-family: 'SuperNormal', sans-serif;
+  font-size: 1rem;
+  color: #b0c4de;
+  letter-spacing: 0.1em;
+}
+
+.page__back {
+  margin-top: 1rem;
+  font-family: 'SuperNormal', sans-serif;
+  font-size: 0.9rem;
+  color: #b0c4de;
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.page__back:hover {
+  opacity: 1;
+}
