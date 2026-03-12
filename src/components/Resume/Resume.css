@@ -1,9 +1,9 @@
 /* ── Page shell ───────────────────────────────────────── */
 .resume {
   min-height: 100vh;
-  background: var(--bg-navy);
+  background: var(--bg-page);
   color: var(--text-body);
-  font-family: 'SuperNormal', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   padding: 2.5rem 1.5rem 5rem;
 }
 
@@ -30,11 +30,12 @@
 
 /* ── Header ───────────────────────────────────────────── */
 .resume__name {
-  font-family: 'SuperCereal', 'SuperFoods', sans-serif;
-  font-size: clamp(2rem, 6vw, 3.2rem);
+  font-family: 'Unique', sans-serif;
+  font-size: clamp(7rem, 6vw, 7rem);
   color: var(--white);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   margin: 0 0 0.4rem;
+  font-feature-settings: 'salt' 1, 'ss01' 1;
 }
 
 .resume__contact {
@@ -46,14 +47,16 @@
 
 /* ── Section title ────────────────────────────────────── */
 .resume__section-title {
-  font-family: 'SuperCereal', 'SuperFoods', sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
+  font-family: 'Unique', sans-serif;
+  font-size: 3rem;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
   color: var(--yellow);
   margin: 0 0 1.2rem;
   padding-bottom: 0.6rem;
   border-bottom: 1px solid rgba(255, 228, 92, 0.25);
+  font-feature-settings: 'salt' 1, 'ss01' 1;
+
 }
 
 /* ── Skills ───────────────────────────────────────────── */
@@ -129,8 +132,8 @@
 }
 
 .resume__job-title {
-  font-family: 'SuperCereal', 'SuperFoods', sans-serif;
-  font-size: 1.05rem;
+  font-family: 'Unique', sans-serif;
+  font-size: 2rem;
   color: var(--white);
   letter-spacing: 0.02em;
 }
@@ -185,7 +188,7 @@
 }
 
 .resume__edu-degree {
-  font-family: 'SuperCereal', 'SuperFoods', sans-serif;
+  font-family: 'Unique', sans-serif;
   font-size: 1rem;
   color: var(--white);
 }

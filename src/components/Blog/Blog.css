@@ -22,14 +22,14 @@
 }
 
 .page__title {
-  font-family: 'SuperCereal', 'SuperFoods', sans-serif;
+  font-family: 'Unique', sans-serif;
   font-size: clamp(3rem, 10vw, 6rem);
   color: var(--red);
   letter-spacing: 0.02em;
 }
 
 .page__status {
-  font-family: 'SuperNormal', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 1rem;
   color: var(--text-muted);
   letter-spacing: 0.1em;
@@ -37,7 +37,7 @@
 
 .page__back {
   margin-top: 1rem;
-  font-family: 'SuperNormal', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 0.9rem;
   color: var(--text-muted);
   text-decoration: none;

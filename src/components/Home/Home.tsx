@@ -8,8 +8,8 @@ const Home: React.FC = () => {
   return (
     <div className="home">
       <div className="home__content">
-        <h1 className="home__name">hi, i'm kynara</h1>
-        <p className="home__tagline">designer · developer · human</p>
+        <h1 className="home__name">Hi, I'm Kynara</h1>
+        {/*<p className="home__tagline">designer · developer · human</p>*/}
 
         <nav className="home__nav">
           <AwesomeBtn

@@ -33,7 +33,7 @@ export const FleeingText: React.FC<FleeingTextProps> = ({ text }) => {
       };
 
       p.preload = () => {
-        font = p.loadFont('/fonts/super-normal-font/SuperNormal-xRoj5.ttf');
+        font = p.loadFont('/fonts/unique/Unique-Regular.ttf');
       };
 
       p.setup = () => {

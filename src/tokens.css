@@ -20,12 +20,14 @@
   --red-light:   #ff6b75;   /* softer red for small text    */
 
   /* ── Dark page backgrounds ──────────────────────────── */
-  --bg-page:     #06060e;   /* all dark-background pages    */
+  --bg-page:     #130477;   /* all dark-background pages    */
 
   /* ── Neutral text ────────────────────────────────────── */
   --text-muted:  #637081;
   --text-body:   #a8bcd0;
   --text-bright: #e8edf5;
   --white:       #ffffff;
+  /* ── Animation helpers ───────────────────────────────── */
+  --i: 0;   /* stagger index — overridden per-element via inline style */
 }
 

@@ -89,7 +89,7 @@ const Resume: React.FC = () => {
 
       {/* ── Header ── */}
       <header className="resume__header" style={{ '--i': 0 } as React.CSSProperties}>
-        <h1 className="resume__name">Kynara Alexa Fernandes</h1>
+        <h1 className="resume__name">KYNARA ALEXA FERNANDES</h1>
         <p className="resume__contact">
           kynarafernandes@gmail.com
         </p>

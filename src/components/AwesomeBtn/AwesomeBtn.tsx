@@ -33,7 +33,7 @@ const AwesomeBtn: React.FC<AwesomeBtnProps> = ({
       '--button-primary-color-light':  textColor,
       '--button-primary-color-hover':  color,
       '--button-primary-color-active': dark,
-      '--button-font-family':   "'SuperCereal', 'SuperFoods', sans-serif",
+      '--button-font-family':   "'Unique', sans-serif",
       '--button-font-weight':   '400',
       '--button-default-height': '52px',
       '--button-default-font-size': '1rem',

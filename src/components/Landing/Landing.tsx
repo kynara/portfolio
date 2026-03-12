@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Landing.css';
 
@@ -7,6 +7,19 @@ type Phase = 'idle' | 'hover' | 'clicked';
 const Landing: React.FC = () => {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>('idle');
+  const cursorRef = useRef<HTMLDivElement>(null);
+
+  // Drive cursor position directly via DOM — no re-renders on every mousemove
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      if (!cursorRef.current) return;
+      cursorRef.current.style.left    = `${e.clientX}px`;
+      cursorRef.current.style.top     = `${e.clientY}px`;
+      cursorRef.current.style.opacity = '1';
+    };
+    window.addEventListener('mousemove', onMove);
+    return () => window.removeEventListener('mousemove', onMove);
+  }, []);
 
   const handleMouseEnter = useCallback(() => {
     if (phase !== 'clicked') setPhase('hover');
@@ -29,6 +42,12 @@ const Landing: React.FC = () => {
 
   return (
     <div className={`landing landing--${phase}`}>
+      {/* Custom cursor — the "snack" about to be eaten */}
+      <div
+        ref={cursorRef}
+        className={`landing__cursor landing__cursor--${phase}`}
+      />
+
       <div className="landing__circle" />
 
       <div
