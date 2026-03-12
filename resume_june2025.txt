@@ -1,0 +1,80 @@
+﻿KYNARA ALEXA FERNANDES
+________________
+
+
+kynarafernandes@gmail.com | (515) 735-8855 | Ames, Iowa
+SKILLS
+________________
+
+
+Programming languages
+Software/Frameworks
+	Typescript, JavaScript, Dart, Java, C, C++, CSS
+Flutter, React Native, React, Redux, RTK, Git, GraphQL, SQL, Appium, Jest
+	EXPERIENCE
+________________
+
+
+
+
+Software Engineer, Casey's General Stores
+	
+
+April 2025 – Ongoing
+	Leading convenience store in the midwest, focused on reimagining customer digital experiences. 
+* Developing the Caseys mobile app with Flutter, Dart and GraphQL and integrating the experience into the legacy native apps for a gradual and seamless transition.
+* Implementing features such as dynamic store menus with food customizations and account management and versatile UI components such as quantity pickers, product cards and location cards.
+* Proactively identified gaps in ticket management practices. Led initiative to transition tickets from product-focused to engineering-specific, improving team clarity and efficiency.
+* Designed and introduced standardized pull request templates, enhancing consistency and quality in code reviews across the team.
+* Maintaining rigorous testing standards and achieving 90% code coverage across project packages.​​
+* Collaborating with Product, Design, and Backend teams to clarify requirements and refine development tasks.
+	
+
+
+
+Software Engineer, Dave, Inc.
+	
+
+September 2021 – July 2023
+	FinTech mobile banking platform that helps users who live paycheck to paycheck.
+* Developed frontend with React Native, Typescript and GraphQL as a member of the Banking team in an Agile environment.
+* Collaborated with Product and Design for planning and implementation of features including instant withdrawal, credit building, recurring transfers, and push provisioning.
+* Implemented round up savings feature resulting in 25% of users saving $0.5M in 2 months.
+* Managed A/B testing on product features using Amplitude experiments and analytics.
+* Created UI automation tests using Appium for banking features.
+* Integrated APIs including Stripe and Level Credit to streamline card processing and credit building.
+* Built reusable UI components for the internal library such as ordered/unordered lists, tooltips, dropdown menus.
+	Software Engineer Intern, Workiva, Inc. 
+	May 2018 - May 2020
+	SaaS company providing a cloud-based connected and reporting compliance platform.
+* Developed frontend with React and Dart as a member of the XBRL Lifecycle team in an Agile environment.
+* Led a collaborative project to build infrastructure and features to visualize data in an interactive panel which was successfully deployed to production.
+* Performed code reviews, quality assurance, testing and releasing of updated features of the XBRL codebase.
+* Modernized legacy tools from older Flash-based implementations to newer React implementation.
+	Teaching Assistant & Peer Mentor, Department of Computer Engineering
+	January 2017 - May 2018
+	* Supervised C programming labs using DualShock controllers; assisted students and supported professor with
+
+
+
+
+teaching and grading.
+
+* Mentored students on software and hardware projects enhancing their technical and problem-solving skills.
+	EDUCATION
+________________
+
+
+Master of Science: Cyber Security, Iowa State University
+Bachelor of Science: Software Engineering, Iowa State University
+	August 2025
+May 2020
+	
+
+
+
+INVOLVEMENT AND AWARDS
+________________
+
+
+Grace Hopper Conference (2024), Digital Women ISU (2024), Vice President - Critical Tinkers ISU (2020), 1st Place - MinneHacks Hackathon (2018), 5th Place and Leepfrog Award - UIowa Hackathon (2017).

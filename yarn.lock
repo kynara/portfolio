@@ -1684,6 +1684,18 @@
     schema-utils "^4.2.0"
     source-map "^0.7.3"
 
+"@rcaferati/react-awesome-button@^8.0.2":
+  version "8.0.2"
+  resolved "https://registry.npmjs.org/@rcaferati/react-awesome-button/-/react-awesome-button-8.0.2.tgz"
+  integrity sha512-3GyTfPHLXYKgkKls+T5SbiUCpOUbYWe1xlVGB+nKtWQBzdy8EZlQGCZExhOUHrxM3GrJcNDsomDls/+nRmjx1Q==
+  dependencies:
+    "@rcaferati/wac" "^1.0.0"
+
+"@rcaferati/wac@^1.0.0":
+  version "1.2.0"
+  resolved "https://registry.npmjs.org/@rcaferati/wac/-/wac-1.2.0.tgz"
+  integrity sha512-JHhiFVmWQQl9/x+kPGbIFuLM8KzERlWTSF9pDRwlodabTGlGmvb1dJnHpj/EczeQmK04KWBot0LdMG1fc+lAGg==
+
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.1"
   resolved "https://registry.npmjs.org/@rollup/plugin-babel/-/plugin-babel-5.3.1.tgz"

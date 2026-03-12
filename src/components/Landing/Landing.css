@@ -6,35 +6,37 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #87ceeb;
+  background-color: var(--yellow-bg);
   position: relative;
   overflow: hidden;
 }
 
-/* ── Growing dark-blue circle ─────────────────────────── */
+/* ── Growing circle ───────────────────────────────────── */
 .landing__circle {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 140px;
-  height: 140px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  background-color: #1a237e;
+  background-color: var(--blue);
   transform: translate(-50%, -50%) scale(0);
   z-index: 1;
   pointer-events: none;
 }
 
 .landing--clicked .landing__circle {
-  animation: circleExpand 1.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: circleExpand 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes circleExpand {
   from {
     transform: translate(-50%, -50%) scale(0);
+    background-color: var(--blue);
   }
   to {
-    transform: translate(-50%, -50%) scale(24);
+    transform: translate(-50%, -50%) scale(100);
+    background-color: var(--blue-dark);
   }
 }
 
@@ -47,10 +49,6 @@
   align-items: center;
   justify-content: center;
   filter: drop-shadow(0 16px 48px rgba(0, 0, 0, 0.18));
-  cursor: default;
-}
-
-.landing--hover .landing__face {
   cursor: default;
 }
 
@@ -75,6 +73,7 @@
   padding: 0;
 }
 
+/* ── Shrink animation ─────────────────────────────────── */
 .landing__face--shrink {
   animation: faceShrink 1.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
@@ -84,5 +83,3 @@
   12%  { transform: scale(1.06); }
   100% { transform: scale(0);    opacity: 0; }
 }
-
-

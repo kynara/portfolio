@@ -1,4 +1,228 @@
-/* Resume-specific overrides */
-.page__title--resume {
-  color: #06d6a0;
+/* ── Page shell ───────────────────────────────────────── */
+.resume {
+  min-height: 100vh;
+  background: var(--bg-navy);
+  color: var(--text-body);
+  font-family: 'SuperNormal', sans-serif;
+  padding: 2.5rem 1.5rem 5rem;
 }
+
+
+.resume__main {
+  max-width: 780px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* ── Shared section animation ─────────────────────────── */
+.resume__header,
+.resume__section {
+  animation: resumeFadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 0.1s);
+}
+
+@keyframes resumeFadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header ───────────────────────────────────────────── */
+.resume__name {
+  font-family: 'SuperCereal', 'SuperFoods', sans-serif;
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  color: var(--white);
+  letter-spacing: 0.02em;
+  margin: 0 0 0.4rem;
+}
+
+.resume__contact {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+/* ── Section title ────────────────────────────────────── */
+.resume__section-title {
+  font-family: 'SuperCereal', 'SuperFoods', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--yellow);
+  margin: 0 0 1.2rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(255, 228, 92, 0.25);
+}
+
+/* ── Skills ───────────────────────────────────────────── */
+.resume__skills {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.resume__skill-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.resume__skill-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  min-width: 90px;
+  padding-top: 0.3rem;
+}
+
+.resume__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.resume__pill {
+  font-size: 0.8rem;
+  color: var(--blue);
+  border: 1px solid rgba(84, 120, 255, 0.4);
+  border-radius: 999px;
+  padding: 0.2rem 0.75rem;
+  letter-spacing: 0.04em;
+  background: rgba(84, 120, 255, 0.08);
+  transition: background 0.2s, border-color 0.2s;
+}
+.resume__pill:hover {
+  background: rgba(84, 120, 255, 0.18);
+  border-color: var(--blue);
+}
+
+/* ── Experience ───────────────────────────────────────── */
+.resume__jobs {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.resume__job {
+  border-left: 2px solid rgba(143, 165, 255, 0.2);
+  padding-left: 1.2rem;
+  transition: border-color 0.2s;
+}
+.resume__job:hover { border-color: var(--blue-light); }
+
+.resume__job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.resume__job-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.resume__job-title {
+  font-family: 'SuperCereal', 'SuperFoods', sans-serif;
+  font-size: 1.05rem;
+  color: var(--white);
+  letter-spacing: 0.02em;
+}
+
+.resume__job-company {
+  font-size: 0.875rem;
+  color: var(--blue-light);
+  letter-spacing: 0.04em;
+}
+
+.resume__job-date {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  padding-top: 0.2rem;
+}
+
+.resume__bullets {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.resume__bullets li {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-body);
+}
+
+/* ── Education ────────────────────────────────────────── */
+.resume__edu {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.resume__edu-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.resume__edu-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.resume__edu-degree {
+  font-family: 'SuperCereal', 'SuperFoods', sans-serif;
+  font-size: 1rem;
+  color: var(--white);
+}
+
+.resume__edu-school {
+  font-size: 0.85rem;
+  color: var(--blue-light);
+}
+
+.resume__edu-date {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  padding-top: 0.2rem;
+}
+
+/* ── Involvement ──────────────────────────────────────── */
+.resume__involvement {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.resume__involvement li {
+  font-size: 0.875rem;
+  color: var(--text-body);
+  padding-left: 1rem;
+  position: relative;
+}
+
+.resume__involvement li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--yellow);
+}
+

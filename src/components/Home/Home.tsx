@@ -1,32 +1,36 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import AwesomeBtn from '../AwesomeBtn/AwesomeBtn';
 import './Home.css';
 
-const navItems = [
-  { to: '/blog', label: 'blog', color: '#ff6b9d' },
-  { to: '/resume', label: 'résumé', color: '#06d6a0' },
-];
+const Home: React.FC = () => {
+  const navigate = useNavigate();
+  return (
+    <div className="home">
+      <div className="home__content">
+        <h1 className="home__name">hi, i'm kynara</h1>
+        <p className="home__tagline">designer · developer · human</p>
 
-const Home: React.FC = () => (
-  <div className="home">
-    <div className="home__content">
-      <h1 className="home__name">hi, i'm kynara</h1>
-      <p className="home__tagline">designer · developer · human</p>
-
-      <nav className="home__nav">
-        {navItems.map(({ to, label, color }) => (
-          <Link
-            key={to}
-            to={to}
-            className="home__card"
-            style={{ '--card-color': color } as React.CSSProperties}
+        <nav className="home__nav">
+          <AwesomeBtn
+            color="#f02d3a"
+            dark="#dd0426"
+            onPress={() => navigate('/blog')}
           >
-            <span className="home__card-label">{label}</span>
-          </Link>
-        ))}
-      </nav>
+            blog
+          </AwesomeBtn>
+          <AwesomeBtn
+            color="#ffe45c"
+            dark="#c9b030"
+            textColor="#06060e"
+            onPress={() => navigate('/resume')}
+          >
+            résumé
+          </AwesomeBtn>
+        </nav>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Home;

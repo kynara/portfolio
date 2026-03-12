@@ -1,0 +1,31 @@
+/**
+ * Design tokens — single source of truth for all colours.
+ * Edit here to retheme the entire site.
+ *
+ * Core palette:  #ffe45c  #5478ff  #2006c6  #f02d3a  #dd0426
+ */
+
+:root {
+  /* ── Core brand ─────────────────────────────────────── */
+  --yellow:      #ffe45c;
+  --blue:        #5478ff;
+  --blue-dark:   #2006c6;
+  --red:         #f02d3a;
+  --red-dark:    #dd0426;
+
+  /* ── Tints (lighter variants for use on dark surfaces) ─ */
+  --yellow-bg:   #fff3b0;   /* landing page background      */
+  --yellow-dim:  #c9b030;   /* yellow on light background   */
+  --blue-light:  #8fa5ff;   /* secondary text / borders     */
+  --red-light:   #ff6b75;   /* softer red for small text    */
+
+  /* ── Dark page backgrounds ──────────────────────────── */
+  --bg-page:     #06060e;   /* all dark-background pages    */
+
+  /* ── Neutral text ────────────────────────────────────── */
+  --text-muted:  #637081;
+  --text-body:   #a8bcd0;
+  --text-bright: #e8edf5;
+  --white:       #ffffff;
+}
+

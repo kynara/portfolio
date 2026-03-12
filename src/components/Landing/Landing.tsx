@@ -19,7 +19,7 @@ const Landing: React.FC = () => {
   const handleClick = useCallback(() => {
     if (phase !== 'hover') return;
     setPhase('clicked');
-    setTimeout(() => navigate('/home'), 1600);
+    setTimeout(() => navigate('/home'), 1000);
   }, [phase, navigate]);
 
   const imgSrc =
@@ -55,4 +55,3 @@ const Landing: React.FC = () => {
 };
 
 export default Landing;
-

@@ -1,105 +1,96 @@
-import React from "react";
-import Sketch from "react-p5";
-import p5Types from "p5";
-import {Vehicle} from "./vehicle";
+import React, { useEffect, useRef } from 'react';
+import p5 from 'p5';
+import { Vehicle } from './vehicle';
 
 interface FleeingTextProps {
-    text: string;
+  text: string;
 }
 
-export const FleeingText: React.FC<FleeingTextProps> = (props: FleeingTextProps) => {
-    let font: p5Types.Font;
-    let vehicles: Vehicle[] = [];
+export const FleeingText: React.FC<FleeingTextProps> = ({ text }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
 
-    let fontSize = 250;
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-    let textWidth;
+    let cancelled = false;
 
-    let points: any[] = [];
+    const sketch = (p: p5) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let font: any;
+      const vehicles: Vehicle[] = [];
+      const fontSize = 250;
+      const textStartWidth = window.innerWidth / 2 - 438;
+      const textStartHeight = window.outerHeight / 2;
 
-    const preload = (p5: p5Types) => {
-        console.log("HERE")
-
-        font = p5.loadFont('./fonts/super-normal-font/SuperNormal-xRoj5.ttf');
-        let temp = font.textBounds(props.text, 0, 0, fontSize);
-
-        console.log(temp)
-        // @ts-ignore
-        textWidth = temp.w;
-        console.log(textWidth)
-
-    };
-
-    let textStartWidth = window.innerWidth/2-438;
-    let textStartHeight = window.outerHeight/2;
-
-
-    const isGoodPt = (x: number, y: any, p5:p5Types) => {
-        for(let i = -2; i < 3; i++) {
-            for(let j = -2; j < 3; j++) {
-                if (p5.get(x+i, y+j)[0] === 0) {
-                    return false;
-                }
-            }
+      const isGoodPt = (x: number, y: number): boolean => {
+        for (let i = -2; i < 3; i++) {
+          for (let j = -2; j < 3; j++) {
+            if (p.get(x + i, y + j)[0] === 0) return false;
+          }
         }
         return true;
-    }
+      };
 
-    const setup = (p5: p5Types, canvasParentRef: Element) => {
-        p5.createCanvas(window.innerWidth, window.innerHeight).parent(canvasParentRef);
+      p.preload = () => {
+        font = p.loadFont('/fonts/super-normal-font/SuperNormal-xRoj5.ttf');
+      };
 
+      p.setup = () => {
+        if (cancelled) return;
+        p.createCanvas(window.innerWidth, window.innerHeight);
+        p.textFont(font);
+        p.textSize(fontSize);
+        p.fill('#F0CF65');
+        p.noStroke();
+        p.text(text, 0, 500);
 
-        p5.textFont(font);
-        p5.textSize(fontSize);
-        p5.fill("#F0CF65");
-        p5.noStroke();
-        p5.text(props.text, 0, 500);
+        const outlinepts = (font.textToPoints(text, 0, 0, fontSize, {
+          sampleFactor: 0.1,
+        }) as { x: number; y: number }[]);
 
-        let outlinepts = font.textToPoints(props.text, 0, 0, fontSize, {
-            sampleFactor: 0.1
-        });
-
-        for (let i = 0; i < outlinepts.length; i++) {
-            p5.point(outlinepts[i].x, outlinepts[i].y);
-            let tempx =outlinepts[i].x, tempy = outlinepts[i].y;
-
-            points.push({x: tempx, y: tempy});
-            let vehicle = new Vehicle(p5, tempx, tempy);
-            vehicles.push(vehicle);
-            p5.stroke(255);
-            p5.strokeWeight(5);
-            p5.point(tempx, tempy);
+        for (const pt of outlinepts) {
+          vehicles.push(new Vehicle(p, pt.x, pt.y));
+          p.stroke(255);
+          p.strokeWeight(5);
+          p.point(pt.x, pt.y);
         }
 
-        let factor = 5;
+        const factor = 5;
         for (let y = 0; y < 750; y += factor) {
-            for (let x = 0; x < 1700; x += factor){
-                let tempx = x + p5.random(0, factor), tempy = y + p5.random(0, factor);
-                if (isGoodPt(tempx, tempy, p5)) {
-                    points.push({x: tempx, y: tempy});
-                    let vehicle = new Vehicle(p5, tempx, tempy-500);
-                    vehicles.push(vehicle);
-                    p5.stroke(255);
-                    p5.strokeWeight(5);
-                    p5.point(tempx, tempy);
-                }
+          for (let x = 0; x < 1700; x += factor) {
+            const tx = x + p.random(0, factor);
+            const ty = y + p.random(0, factor);
+            if (isGoodPt(tx, ty)) {
+              vehicles.push(new Vehicle(p, tx, ty - 500));
             }
+          }
         }
+      };
+
+      p.draw = () => {
+        if (cancelled) { p.noLoop(); return; }
+        p.textSize(fontSize);
+        p.background('#DDEDAA');
+        p.noStroke();
+        p.text(text, textStartWidth, textStartHeight);
+        for (const v of vehicles) {
+          v.behaviors(p, textStartWidth, textStartHeight);
+          v.update(p);
+          v.show(p, textStartWidth, textStartHeight);
+        }
+      };
     };
 
-    const draw = (p5: p5Types) => {
-        p5.textSize(fontSize);
-        p5.background('#DDEDAA');
-        p5.noStroke();
-        p5.text(props.text, textStartWidth, textStartHeight);
+    // p5 instance mode
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const instance = new (p5 as any)(sketch, container);
 
-        for (let i = 0; i < vehicles.length; i++) {
-            let v = vehicles[i];
-            v.behaviors(p5,textStartWidth,textStartHeight);
-            v.update(p5);
-            v.show(p5,textStartWidth,textStartHeight);
-        }
+    return () => {
+      cancelled = true;
+      instance.remove();
     };
+  }, [text]);
 
-    return <Sketch setup={setup} draw={draw} preload={preload}/>;
+  return <div ref={containerRef} style={{ position: 'absolute', inset: 0 }} />;
 };

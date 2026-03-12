@@ -5,10 +5,8 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  background: var(--bg-page);
 }
-
-.page--blog   { background: #0d0d1a; }
-.page--resume { background: #001a12; }
 
 .page__content {
   display: flex;
@@ -26,14 +24,14 @@
 .page__title {
   font-family: 'SuperCereal', 'SuperFoods', sans-serif;
   font-size: clamp(3rem, 10vw, 6rem);
-  color: #ff6b9d;
+  color: var(--red);
   letter-spacing: 0.02em;
 }
 
 .page__status {
   font-family: 'SuperNormal', sans-serif;
   font-size: 1rem;
-  color: #b0c4de;
+  color: var(--text-muted);
   letter-spacing: 0.1em;
 }
 
@@ -41,7 +39,7 @@
   margin-top: 1rem;
   font-family: 'SuperNormal', sans-serif;
   font-size: 0.9rem;
-  color: #b0c4de;
+  color: var(--text-muted);
   text-decoration: none;
   letter-spacing: 0.08em;
   opacity: 0.6;
