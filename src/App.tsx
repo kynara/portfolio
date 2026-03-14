@@ -4,7 +4,6 @@ import Landing from './components/Landing/Landing';
 import Home from './components/Home/Home';
 import Blog from './components/Blog/Blog';
 import Resume from './components/Resume/Resume';
-import './App.css';
 
 function App() {
   return (

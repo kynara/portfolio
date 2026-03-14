@@ -1,46 +1,78 @@
-# Getting Started with Create React App
+# kynara.dev — Personal Portfolio
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React + TypeScript portfolio site. Features an interactive landing page,
+a home hub, a résumé page, and a blog placeholder.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Tech stack
 
-### `yarn start`
+| Layer | Choice |
+|---|---|
+| Framework | React 18 (Create React App) |
+| Language | TypeScript 4 |
+| Routing | React Router v7 |
+| Animation | CSS keyframes + p5.js (FleeingText) |
+| Buttons | `@rcaferati/react-awesome-button` |
+| Font | *Unique* (custom, all weights) |
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Project structure
 
-### `yarn test`
+```
+src/
+├── tokens.ts                  # JS mirror of tokens.css — use for JS-only colour props
+├── tokens.css                 # CSS custom properties — single source of truth for colour
+├── index.css                  # Global reset, font-face declarations
+├── App.tsx                    # Route definitions
+└── components/
+    ├── Landing/               # / — interactive face animation, entry point
+    ├── Home/                  # /home — name card + nav buttons
+    ├── Blog/                  # /blog — coming-soon placeholder
+    ├── Resume/                # /resume — full résumé layout
+    │   ├── Resume.data.ts     #   static content (skills, jobs, education…)
+    │   └── Resume.tsx / .css  #   layout + styles
+    ├── AwesomeBtn/            # Thin wrapper around react-awesome-button
+    └── FleeingText/           # p5.js particle text (available for use)
+        ├── FleeingText.tsx    #   React component / sketch
+        └── Vehicle.ts         #   Autonomous agent (arrive + flee steering)
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `yarn build`
+## Design tokens
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+All colours live in **`src/tokens.css`** as CSS custom properties and are
+mirrored in **`src/tokens.ts`** for use in JS props (e.g. `AwesomeBtn`).
+**Edit both files together** when changing a colour.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Core palette: `#ffe45c` · `#5478ff` · `#2006c6` · `#f02d3a` · `#dd0426`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `yarn eject`
+## Updating the résumé
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Edit **`src/components/Resume/Resume.data.ts`** — no layout code to touch.
+The file exports typed arrays (`experience`, `education`, `skills`, `involvement`).
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Getting started
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```bash
+npm install
+npm start        # dev server at http://localhost:3000
+npm run build    # production build → build/
+npm test         # run tests
+```
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Deployment
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The `build/` folder is a static export — deploy to any static host
+(Netlify, Vercel, GitHub Pages, etc.).
+
+For client-side routing to work, configure the host to serve `index.html`
+for all routes (e.g. a `_redirects` file on Netlify: `/* /index.html 200`).

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import AwesomeBtn from '../AwesomeBtn/AwesomeBtn';
+import { colors } from '../../tokens';
 import './Blog.css';
 
 const Blog: React.FC = () => {
@@ -11,8 +12,8 @@ const Blog: React.FC = () => {
         <h1 className="page__title">blog</h1>
         <p className="page__status">coming soon</p>
         <AwesomeBtn
-          color="#5478ff"
-          dark="#2006c6"
+          color={colors.blue}
+          dark={colors.blueDark}
           size="small"
           onPress={() => navigate('/home')}
         >
