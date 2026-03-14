@@ -1,13 +1,102 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AwesomeBtn from '../AwesomeBtn/AwesomeBtn';
-import { skills, experience, education, involvement } from './Resume.data';
+import { timelineData } from './Resume.data';
 import { colors } from '../../tokens';
 import './Resume.css';
 
 
 const Resume: React.FC = () => {
   const navigate = useNavigate();
+  const timelineRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const node = timelineRef.current;
+    if (!node) return;
+
+    // Throttle wheel events to prevent skipping items.
+    let isScrolling = false;
+    let scrollTimeout: NodeJS.Timeout;
+
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+
+      // If we are already handling a scroll step, ignore extra events.
+      // This enforces a "one click, one slide" interaction.
+      if (isScrolling) return;
+
+      // Determine distinct direction.
+      const delta = event.deltaY + event.deltaX;
+      if (Math.abs(delta) < 10) return; // Ignore tiny movements (trackpad noise)
+
+      const direction = delta > 0 ? 1 : -1;
+
+      // Find current centered item
+      const ITEMS_VISIBLE = 2; // Approximate logical "page" but we shift 1 by 1.
+      
+      const items = Array.from(node.querySelectorAll('.resume__timeline-item'));
+      // Center of view is still useful as a reference point for "current focus".
+      // But user wants to align 2 items. The CSS scroll-snap aligns the *left edge* of an item to a "start" offset.
+      // So finding the item whose left edge is closest to that "start" offset is better.
+      
+      // Calculate the "snap point" in scroll coordinates.
+      // Padding-left determines where the first item sits.
+      // We want to find which item is currently "active" at the snap point.
+      
+      const containerPaddingLeft = parseFloat(getComputedStyle(node).paddingLeft) || 0;
+      // The snap zone starts at containerRect.left + scroll-padding-left.
+      // We want the item whose left edge is closest to that line.
+      // Note: getComputedStyle(node).scrollPaddingLeft returns value like "400px"
+      // If calc() is used, it returns computed px.
+      const computedStyle = getComputedStyle(node);
+      const scrollPaddingStr = computedStyle.scrollPaddingLeft;
+      const scrollPadding = parseFloat(scrollPaddingStr) || containerPaddingLeft;
+      
+      let closestIndex = 0;
+      let minDistance = Infinity;
+
+      items.forEach((item, index) => {
+        const rect = item.getBoundingClientRect();
+        const containerRect = node.getBoundingClientRect();
+        const dist = Math.abs((rect.left - containerRect.left) - scrollPadding);
+        
+        if (dist < minDistance) {
+          minDistance = dist;
+          closestIndex = index;
+        }
+      });
+
+      // Target the next or previous item
+      const targetIndex = Math.min(
+        items.length - 1,
+        Math.max(0, closestIndex + direction)
+      );
+
+      if (targetIndex === closestIndex && minDistance < 10) { 
+          return;
+      }
+      
+      isScrolling = true;
+      items[targetIndex].scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'start', // Match CSS scroll-snap-align: start
+      });
+
+      // Unlock after animation (approximate duration)
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        isScrolling = false;
+      }, 600); // 600ms matches CSS transition/smooth scroll feel
+    };
+
+    node.addEventListener('wheel', onWheel, { passive: false });
+    return () => {
+        node.removeEventListener('wheel', onWheel);
+        clearTimeout(scrollTimeout);
+    };
+  }, []);
+
   return (
   <div className="resume">
 
@@ -21,77 +110,24 @@ const Resume: React.FC = () => {
     </AwesomeBtn>
 
     <main className="resume__main">
-
-      {/* ── Header ── */}
-      <header className="resume__header" style={{ '--i': 0 } as React.CSSProperties}>
-        <h1 className="resume__name">KYNARA ALEXA FERNANDES</h1>
-        <p className="resume__contact">
-          kynarafernandes@gmail.com
-        </p>
-      </header>
-
-      {/* ── Skills ── */}
-      <section className="resume__section" style={{ '--i': 1 } as React.CSSProperties}>
-        <h2 className="resume__section-title">Skills</h2>
-        <div className="resume__skills">
-          <div className="resume__skill-row">
-            <span className="resume__skill-label">Languages</span>
-            <div className="resume__pills">
-              {skills.languages.map(s => <span key={s} className="resume__pill">{s}</span>)}
-            </div>
-          </div>
-          <div className="resume__skill-row">
-            <span className="resume__skill-label">Frameworks</span>
-            <div className="resume__pills">
-              {skills.frameworks.map(s => <span key={s} className="resume__pill">{s}</span>)}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Experience ── */}
-      <section className="resume__section" style={{ '--i': 2 } as React.CSSProperties}>
-        <h2 className="resume__section-title">Experience</h2>
-        <div className="resume__jobs">
-          {experience.map(job => (
-            <article key={job.company} className="resume__job">
-              <div className="resume__job-header">
-                <div className="resume__job-meta">
-                  <span className="resume__job-title">{job.title}</span>
-                  <span className="resume__job-company">{job.company}</span>
+      <section className="resume__section" style={{ '--i': 0 } as React.CSSProperties}>
+        <div className="resume__timeline" ref={timelineRef}>
+          <div className="resume__timeline-track">
+            {timelineData.map((item, index) => (
+              <article 
+                key={`${item.title}-${index}`} 
+                className={`resume__timeline-item resume__timeline-item--${item.type}`}
+              >
+                <div className="resume__timeline-dot" aria-hidden />
+                <div className="resume__timeline-meta">
+                  <span className="resume__timeline-date">{item.date}</span>
+                  <span className="resume__timeline-title">{item.title}</span>
+                  <span className="resume__timeline-company">{item.subtitle}</span>
                 </div>
-                <span className="resume__job-date">{job.date}</span>
-              </div>
-              <ul className="resume__bullets">
-                {job.bullets.map((b, i) => <li key={i}>{b}</li>)}
-              </ul>
-            </article>
-          ))}
+              </article>
+            ))}
+          </div>
         </div>
-      </section>
-
-      {/* ── Education ── */}
-      <section className="resume__section" style={{ '--i': 3 } as React.CSSProperties}>
-        <h2 className="resume__section-title">Education</h2>
-        <div className="resume__edu">
-          {education.map(e => (
-            <div key={e.degree} className="resume__edu-row">
-              <div className="resume__edu-meta">
-                <span className="resume__edu-degree">{e.degree}</span>
-                <span className="resume__edu-school">{e.school}</span>
-              </div>
-              <span className="resume__edu-date">{e.date}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Involvement ── */}
-      <section className="resume__section" style={{ '--i': 4 } as React.CSSProperties}>
-        <h2 className="resume__section-title">Involvement & Awards</h2>
-        <ul className="resume__involvement">
-          {involvement.map(item => <li key={item}>{item}</li>)}
-        </ul>
       </section>
 
     </main>
