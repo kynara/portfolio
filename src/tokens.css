@@ -15,8 +15,8 @@
 
   /* ── Tints (lighter variants for use on dark surfaces) ─ */
   --yellow-bg:   #fff3b0;   /* landing page background      */
-  --yellow-dim:  #b99f1b;   /* yellow on light background   */
-  --blue-light:  #8fff;   /* secondary text / borders     */
+  --yellow-dim:  #ffd500;   /* yellow on light background   */
+  --blue-light:  #5478FF;   /* secondary text / borders     */
   --red-light:   #ff6b75;   /* softer red for small text    */
 
   /* ── Dark page backgrounds ──────────────────────────── */

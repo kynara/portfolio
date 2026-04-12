@@ -104,7 +104,7 @@ const Resume: React.FC = () => {
       color={colors.blue}
       dark={colors.blueDark}
       size="small"
-      onPress={() => navigate('/home')}
+      onPress={() => navigate('/')}
     >
       back
     </AwesomeBtn>

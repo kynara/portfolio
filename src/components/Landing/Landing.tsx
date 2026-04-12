@@ -32,7 +32,7 @@ const Landing: React.FC = () => {
   const handleClick = useCallback(() => {
     if (phase !== 'hover') return;
     setPhase('clicked');
-    setTimeout(() => navigate('/home'), 1000);
+    setTimeout(() => navigate('/resume'), 1000);
   }, [phase, navigate]);
 
   const imgSrc =
@@ -42,6 +42,13 @@ const Landing: React.FC = () => {
 
   return (
     <div className={`landing landing--${phase}`}>
+      {/* Background Text */}
+      <div className="landing__bg-text" aria-hidden="true">
+        <span className="landing__bg-text-line1">YOU ARE</span>
+        <span className="landing__bg-text-line2">WHAT</span>
+        <span className="landing__bg-text-line3">YOU EAT</span>
+      </div>
+
       {/* Custom cursor — the "snack" about to be eaten */}
       <div
         ref={cursorRef}

@@ -1,4 +1,6 @@
 /* ── Base ─────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Bayon&display=swap');
+
 .landing {
   min-height: 100vh;
   width: 100%;
@@ -6,10 +8,97 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: var(--blue-light);
+  background-color: var(--blue);
   position: relative;
   overflow: hidden;
   cursor: none;
+}
+
+/* ── Background Text ──────────────────────────────────── */
+.landing__bg-text {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding-left: 2vw; /* Use vw to scale with screen size */
+  z-index: 0;
+  pointer-events: none;
+  font-family: 'Bayon', sans-serif;
+  color: rgba(255, 228, 92, 0.8); /* var(--yellow) is #ffe45c */
+  line-height: 0.8; /* Extremely tight line height to stack them closely */
+  text-transform: uppercase;
+  user-select: none;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.landing__bg-text-line1 {
+  /* Fits ~7 characters "YOU ARE" */
+  font-size: clamp(8rem, 32vh, 32rem);
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+
+.landing__bg-text-line2 {
+  /* Fits ~4 characters "WHAT" - requires largest font size */
+  font-size: clamp(12rem, 50vh, 45rem);
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  /*transform: translateY(-2vh);*/
+}
+
+.landing__bg-text-line3 {
+  /* Fits ~7 characters "YOU EAT" (plus space) - balances with line 1 */
+  font-size: clamp(8rem, 33vh, 32rem);
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  /*transform: translateY(-4vh);*/
+}
+
+/* Mobile: preserve the same vibe but avoid clipping/cutoff */
+@media (max-width: 768px) {
+  .landing__bg-text {
+    padding-left: 4vw;
+    line-height: 0.86;
+  }
+
+  .landing__bg-text-line1 {
+    font-size: clamp(3.8rem, 18vw, 6.5rem);
+    letter-spacing: -0.03em;
+  }
+
+  .landing__bg-text-line2 {
+    font-size: clamp(5.4rem, 26vw, 9.5rem);
+    letter-spacing: -0.03em;
+  }
+
+  .landing__bg-text-line3 {
+    font-size: clamp(4rem, 19vw, 6.8rem);
+    letter-spacing: -0.03em;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 390px) {
+  .landing__bg-text {
+    line-height: 0.9;
+  }
+
+  .landing__bg-text-line1 {
+    font-size: clamp(3.2rem, 16.5vw, 5.8rem);
+  }
+
+  .landing__bg-text-line2 {
+    font-size: clamp(4.6rem, 23vw, 8.2rem);
+  }
+
+  .landing__bg-text-line3 {
+    font-size: clamp(3.4rem, 17.5vw, 6rem);
+  }
 }
 
 /* ── Custom cursor ────────────────────────────────────── */
