@@ -11,7 +11,6 @@
   background-color: var(--blue);
   position: relative;
   overflow: hidden;
-  cursor: none;
 }
 
 /* ── Background Text ──────────────────────────────────── */
@@ -62,91 +61,113 @@
 /* Mobile: preserve the same vibe but avoid clipping/cutoff */
 @media (max-width: 768px) {
   .landing__bg-text {
-    padding-left: 4vw;
-    line-height: 0.86;
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 4vh;
+    gap: 1.5vw;
+    line-height: 1;
   }
 
-  .landing__bg-text-line1 {
-    font-size: clamp(3.8rem, 18vw, 6.5rem);
-    letter-spacing: -0.03em;
-  }
-
-  .landing__bg-text-line2 {
-    font-size: clamp(5.4rem, 26vw, 9.5rem);
-    letter-spacing: -0.03em;
-  }
-
+  .landing__bg-text-line1,
+  .landing__bg-text-line2,
   .landing__bg-text-line3 {
-    font-size: clamp(4rem, 19vw, 6.8rem);
-    letter-spacing: -0.03em;
+    font-size: clamp(3rem, 12.5vw, 5.5rem);
+    letter-spacing: normal;
+  }
+
+  .landing__face {
+    height: clamp(300px, 75vw, 480px);
+    margin-top: 10vh;
   }
 }
 
 /* Extra small phones */
 @media (max-width: 390px) {
   .landing__bg-text {
-    line-height: 0.9;
+    padding-top: 1vh;
+    gap: 1vw;
   }
 
-  .landing__bg-text-line1 {
-    font-size: clamp(3.2rem, 16.5vw, 5.8rem);
-  }
-
-  .landing__bg-text-line2 {
-    font-size: clamp(4.6rem, 23vw, 8.2rem);
-  }
-
+  .landing__bg-text-line1,
+  .landing__bg-text-line2,
   .landing__bg-text-line3 {
-    font-size: clamp(3.4rem, 17.5vw, 6rem);
+    font-size: clamp(2.8rem, 9vw, 4.2rem);
+  }
+
+  .landing__face {
+    height: clamp(260px, 75vw, 380px);
+    margin-top: 8vh;
   }
 }
 
-/* ── Custom cursor ────────────────────────────────────── */
-.landing__cursor {
-  position: fixed;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--yellow);
-  box-shadow: 0 0 0 2px var(--yellow-dim);
-  pointer-events: none;
-  z-index: 999;
-  opacity: 0;                      /* hidden until first mousemove  */
-  transform: translate(-50%, -50%);
-  transition:
-    width      0.18s ease,
-    height     0.18s ease,
-    background 0.18s ease,
-    box-shadow 0.18s ease,
-    opacity    0.18s ease,
-    transform  0.18s ease;
+/* ── Draggable Icons ──────────────────────────────────── */
+
+.landing__icons-container {
+  position: absolute;
+  right: 15vw;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3rem;
+  z-index: 10;
+  pointer-events: none; /* Let pointer events pass through container */
 }
 
-/* Hovering face — cursor turns red and panics */
-.landing__cursor--hover {
-  width: 18px;
-  height: 18px;
-  background: var(--red);
-  box-shadow: 0 0 0 3px var(--red-dark);
-  animation: cursorPanic 0.22s ease-in-out infinite alternate;
+.landing__icon-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
 }
 
-@keyframes cursorPanic {
-  from { transform: translate(-50%, -50%) scale(1)    rotate(-8deg); }
-  to   { transform: translate(-50%, -50%) scale(1.45) rotate( 8deg); }
+.landing__icon-label {
+  font-family: 'Bayon', sans-serif;
+  color: var(--text-dark);
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  user-select: none;
+  background-color: var(--yellow);
+  padding: 0.2rem 0.8rem;
+  border-radius: 4px;
 }
 
-/* Clicked — cursor gets swallowed */
-.landing__cursor--clicked {
-  width: 0;
-  height: 0;
-  opacity: 0;
-  box-shadow: none;
-  transition:
-    width      0.25s ease-in,
-    height     0.25s ease-in,
-    opacity    0.2s  ease-in,
-    box-shadow 0.2s  ease-in;
+.landing__icon-img {
+  width: 60px;
+  height: 60px;
+  cursor: grab;
+  pointer-events: auto; /* Re-enable pointer events for the icon */
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  touch-action: none; /* Important for pointer events API down/move mapping */
+}
+
+.landing__icon-img:active {
+  cursor: grabbing;
+}
+
+@media (max-width: 768px) {
+  .landing__icons-container {
+    right: 50%;
+    transform: translateX(50%);
+    top: auto;
+    bottom: 5vh;
+    flex-direction: row;
+    gap: 2rem;
+  }
+  .landing__icon-img {
+    width: 45px;
+    height: 45px;
+  }
+  .landing__icon-label {
+    font-size: 1rem;
+  }
 }
 
 /* ── Growing circle ───────────────────────────────────── */
@@ -182,7 +203,7 @@
 .landing__face {
   position: relative;
   z-index: 2;
-  height: clamp(420px, 72vh, 780px);
+  height: clamp(350px, 38vw, 700px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -207,7 +228,6 @@
   left: 37.5%;
   background: transparent;
   border: none;
-  cursor: none;
   padding: 0;
 }
 
@@ -219,5 +239,5 @@
 @keyframes faceShrink {
   0%   { transform: scale(1);    opacity: 1; }
   12%  { transform: scale(1.06); }
-  100% { transform: scale(0);    opacity: 0.8; }
+  100% { transform: scale(0.7);    opacity: 0.8; }
 }
