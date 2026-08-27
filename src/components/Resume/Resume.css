@@ -2,6 +2,7 @@
 
 /* ── Page shell ───────────────────────────────────────── */
 .resume {
+  --timeline-gap: clamp(9rem, 50vw, 100rem);
   position: relative;
   min-height: 100vh;
   background: var(--yellow-bg);
@@ -65,19 +66,19 @@
   width: 100%;
   cursor: grab;
   scroll-snap-type: x mandatory;
-  /* (50vw) - (Item 300px) - (Half Gap 7.5rem) = Centered between item 1 and 2 */
-  scroll-padding-left: max(1rem, calc(50vw - 300px - 7.5rem));
+  /* (50vw) - (Item 300px) - (Half Gap) = centered between item 1 and 2 */
+  scroll-padding-left: max(1rem, calc(50vw - 300px - (var(--timeline-gap) / 2)));
 }
 .resume__timeline:active { cursor: grabbing; }
 .resume__timeline::-webkit-scrollbar { display: none; }
 
 .resume__timeline-track {
-  --gap: 15rem;
+  --gap: var(--timeline-gap);
   position: relative;
   display: flex;
   gap: var(--gap);
   /* Match scroll-padding-left for start, symmetrical for end */
-  padding: 0 max(1rem, calc(50vw - 300px - 7.5rem));
+  padding: 0 max(1rem, calc(50vw - 300px - (var(--timeline-gap) / 2)));
   align-items: flex-start;
   width: max-content;
 }
@@ -113,18 +114,6 @@
   /* Reverse order so Date is at bottom (closest to line), matching 'below' symmetry */
   flex-direction: column-reverse;
 }
-
-/* Adjust meta order for 'above' items so title is close to line? */
-/* Current order: Date, Title, Subtitle.
-   If above, maybe we want Date at top (furthest away) -> Title -> Subtitle (closest to line)?
-   Flex direction is column. bottom alignment pushes them up.
-   Visual order:
-   (Top)
-   Date
-   Title
-   Subtitle
-   (Line)
-*/
 
 /* ── Dots & Lines ────────────────────────────────────── */
 
