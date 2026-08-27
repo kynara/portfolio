@@ -20,6 +20,7 @@ const ICONS: IconData[] = [
 const Landing: React.FC = () => {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>('idle');
+  const [dragGuidePath, setDragGuidePath] = useState<string | null>(null);
   const mouthRef = useRef<HTMLDivElement>(null);
 
   // Create refs for each icon statically since ICONS length is static
@@ -33,6 +34,30 @@ const Landing: React.FC = () => {
     setPhase('clicked');
     setTimeout(() => navigate(path), 1000);
   }, [navigate]);
+
+  const getMouthCenter = () => {
+    if (!mouthRef.current) return null;
+    const mouthRect = mouthRef.current.getBoundingClientRect();
+    return {
+      x: mouthRect.left + mouthRect.width / 2,
+      y: mouthRect.top + mouthRect.height / 2,
+    };
+  };
+
+  const buildGuidePath = (startX: number, startY: number, endX: number, endY: number) => {
+    const dx = endX - startX;
+    const dy = endY - startY;
+    const distance = Math.hypot(dx, dy);
+    const norm = distance === 0 ? 1 : distance;
+    const perpX = -dy / norm;
+    const perpY = dx / norm;
+    const wobble = Math.min(100, Math.max(100, distance * 0.2));
+    const c1x = startX + dx * 0.25 + perpX * wobble;
+    const c1y = startY + dy * 0.25 + perpY * wobble;
+    const c2x = startX + dx * 0.72 - perpX * wobble;
+    const c2y = startY + dy * 0.72 - perpY * wobble;
+    return `M ${startX} ${startY} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${endX} ${endY}`;
+  };
 
   const imgSrc =
     phase === 'clicked' ? '/images/post-eat-close-mouth.png'
@@ -50,6 +75,10 @@ const Landing: React.FC = () => {
 
     const startX = e.clientX;
     const startY = e.clientY;
+    const initialMouth = getMouthCenter();
+    if (initialMouth) {
+      setDragGuidePath(buildGuidePath(startX, startY, initialMouth.x, initialMouth.y));
+    }
 
     const onMove = (moveEvent: PointerEvent) => {
       const dx = moveEvent.clientX - startX;
@@ -57,14 +86,20 @@ const Landing: React.FC = () => {
       if (imgRef.current) {
         imgRef.current.style.transform = `translate(${dx}px, ${dy}px) scale(1.1)`;
       }
+      const mouthCenter = getMouthCenter();
+      if (mouthCenter) {
+        setDragGuidePath(
+          buildGuidePath(moveEvent.clientX, moveEvent.clientY, mouthCenter.x, mouthCenter.y),
+        );
+      }
     };
 
     const onUp = (upEvent: PointerEvent) => {
       imgRef.current?.releasePointerCapture(e.pointerId);
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onUp);
+      setDragGuidePath(null);
 
-      let dropped = false;
       if (imgRef.current && mouthRef.current) {
         const mouthRect = mouthRef.current.getBoundingClientRect();
         const dropX = upEvent.clientX;
@@ -75,7 +110,6 @@ const Landing: React.FC = () => {
                          dropY >= (mouthRect.top - 20) && dropY <= (mouthRect.bottom + 20);
 
         if (isInside) {
-          dropped = true;
           handleDropSuccess(icon.path);
           imgRef.current.style.transition = 'transform 0.4s ease, opacity 0.2s ease';
           imgRef.current.style.opacity = '0';
@@ -114,7 +148,26 @@ const Landing: React.FC = () => {
         <div className="landing__mouth-target" ref={mouthRef} />
       </div>
 
+      {dragGuidePath && (
+        <svg className="landing__drag-guide" aria-hidden="true">
+          <defs>
+            {/*<marker*/}
+            {/*  id="landing-drag-arrowhead"*/}
+            {/*  markerWidth="8"*/}
+            {/*  markerHeight="8"*/}
+            {/*  refX="7"*/}
+            {/*  refY="3.5"*/}
+            {/*  orient="auto"*/}
+            {/*>*/}
+            {/*  <path d="M0,0 L8,3.5 L0,7 z" fill="var(--yellow)" />*/}
+            {/*</marker>*/}
+          </defs>
+          <path d={dragGuidePath} className="landing__drag-guide-path" markerEnd="url(#landing-drag-arrowhead)" />
+        </svg>
+      )}
+
       <div className="landing__icons-container">
+        <p className="landing__icons-instruction">Feed me an icon to navigate</p>
         {ICONS.map((icon, index) => {
           const imgRef = iconRefs[index];
           return (

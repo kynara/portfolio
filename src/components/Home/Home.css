@@ -22,7 +22,7 @@
 }
 
 .home__name {
-  font-family: 'Unique', sans-serif;
+  font-family: 'Fraunces', serif;
   font-size: clamp(2.5rem, 8vw, 5rem);
   color: var(--yellow);
   letter-spacing: 0.03em;

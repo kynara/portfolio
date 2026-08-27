@@ -100,14 +100,18 @@ const Resume: React.FC = () => {
   return (
   <div className="resume">
 
-    <AwesomeBtn
-      color={colors.blue}
-      dark={colors.blueDark}
-      size="small"
-      onPress={() => navigate('/')}
-    >
-      back
-    </AwesomeBtn>
+    <div className="resume__back-button">
+      <AwesomeBtn
+        color={colors.blue}
+        dark={colors.blueDark}
+        fontFamily="'Bayon', sans-serif"
+        minWidth="104px"
+        size="small"
+        onPress={() => navigate('/')}
+      >
+        Back
+      </AwesomeBtn>
+    </div>
 
     <main className="resume__main">
       <section className="resume__section" style={{ '--i': 0 } as React.CSSProperties}>

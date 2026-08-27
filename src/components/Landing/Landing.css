@@ -114,28 +114,39 @@
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 3rem;
   z-index: 10;
   pointer-events: none; /* Let pointer events pass through container */
 }
 
+.landing__icons-instruction {
+  margin: 0;
+  margin-bottom: 0.5rem;
+  font-family: 'Bayon', sans-serif;
+  color: var(--yellow);
+  font-size: 1.5rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1;
+  user-select: none;
+}
+
 .landing__icon-wrapper {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .landing__icon-label {
   font-family: 'Bayon', sans-serif;
-  color: var(--text-dark);
+  color: var(--yellow);
   font-size: 1.2rem;
   text-transform: uppercase;
   user-select: none;
-  background-color: var(--yellow);
-  padding: 0.2rem 0.8rem;
-  border-radius: 4px;
+  line-height: 1;
 }
 
 .landing__icon-img {
@@ -150,6 +161,30 @@
 
 .landing__icon-img:active {
   cursor: grabbing;
+}
+
+.landing__drag-guide {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9;
+}
+
+.landing__drag-guide-path {
+  fill: none;
+  stroke: var(--yellow);
+  stroke-width: 3px;
+  stroke-dasharray: 9 8;
+  stroke-linecap: round;
+  animation: dragGuideFlow 0.9s linear infinite;
+}
+
+@keyframes dragGuideFlow {
+  to {
+    stroke-dashoffset: -34;
+  }
 }
 
 @media (max-width: 768px) {
@@ -167,6 +202,9 @@
   }
   .landing__icon-label {
     font-size: 1rem;
+  }
+  .landing__icons-instruction {
+    font-size: 1.2rem;
   }
 }
 

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Bayon&display=swap');
+
 .contact {
   display: flex;
   align-items: center;
@@ -14,12 +16,12 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   max-width: 500px;
   width: 90%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Fraunces', serif;
 }
 
 .contact__container h1 {
   margin-bottom: 2rem;
-  font-family: 'Unique', sans-serif;
+  font-family: 'Fraunces', serif;
   color: var(--blue-dark);
   text-align: center;
   font-size: 2.5rem;
@@ -28,13 +30,15 @@
 .contact__form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.75rem;
+  font-family: 'Fraunces', serif;
 }
 
 .contact__form label {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  font-family: 'Fraunces', serif;
   font-weight: 600;
 }
 
@@ -44,12 +48,44 @@
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
-  font-family: inherit;
+  font-family: 'Fraunces', serif;
   resize: vertical;
+}
+
+.contact__form input:focus,
+.contact__form textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(12, 93, 149, 0.18);
+}
+
+.contact__error {
+  min-height: 1rem;
+  margin: 0;
+  font-family: 'Fraunces', serif;
+  font-size: 0.9rem;
+  color: var(--red-dark);
 }
 
 .contact__actions {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-top: 1rem;
+  gap: 1rem;
+}
+
+.contact__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  text-align: center;
+}
+
+.contact__success p {
+  margin: 0;
+  font-family: 'Fraunces', serif;
+  color: var(--blue-dark);
+  font-size: 1.1rem;
 }

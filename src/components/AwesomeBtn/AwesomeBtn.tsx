@@ -10,6 +10,11 @@ interface AwesomeBtnProps {
   dark: string;
   /** Label text colour — defaults to white */
   textColor?: string;
+  /** Optional font family for button label */
+  fontFamily?: string;
+  /** Optional minimum width to prevent label truncation */
+  minWidth?: string;
+  disabled?: boolean;
   onPress?: () => void;
   /** 'small' for back/secondary actions, omit for full-size */
   size?: string;
@@ -20,26 +25,31 @@ const AwesomeBtn: React.FC<AwesomeBtnProps> = ({
   color,
   dark,
   textColor = '#ffffff',
+  fontFamily = "'Fraunces', serif",
+  minWidth,
+  disabled,
   onPress,
   size,
 }) => (
   <AwesomeButton
     type="primary"
     size={size}
+    disabled={disabled}
     onPress={onPress}
     style={{
-      '--button-primary-color':        color,
-      '--button-primary-color-dark':   dark,
-      '--button-primary-color-light':  textColor,
-      '--button-primary-color-hover':  color,
+      '--button-primary-color': color,
+      '--button-primary-color-dark': dark,
+      '--button-primary-color-light': textColor,
+      '--button-primary-color-hover': color,
       '--button-primary-color-active': dark,
-      '--button-font-family':   "'Unique', sans-serif",
-      '--button-font-weight':   '400',
+      '--button-font-family': fontFamily,
+      '--button-font-weight': '400',
       '--button-default-height': '52px',
       '--button-default-font-size': '1rem',
       '--button-default-border-radius': '10px',
       '--button-raise-level': '5px',
       '--button-horizontal-padding': '32px',
+      minWidth,
     } as React.CSSProperties}
   >
     {children}

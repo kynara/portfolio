@@ -22,7 +22,7 @@
 }
 
 .page__title {
-  font-family: 'Unique', sans-serif;
+  font-family: 'Fraunces', serif;
   font-size: clamp(3rem, 10vw, 6rem);
   color: var(--red);
   letter-spacing: 0.02em;

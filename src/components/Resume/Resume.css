@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Bayon&display=swap');
+
 /* ── Page shell ───────────────────────────────────────── */
 .resume {
+  position: relative;
   min-height: 100vh;
   background: var(--yellow-bg);
   color: var(--text-body);
@@ -33,7 +36,7 @@
 
 /* ── Section title ────────────────────────────────────── */
 .resume__section-title {
-  font-family: 'Unique', sans-serif;
+  font-family: 'Fraunces', serif;
   font-size: 3rem;
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -179,18 +182,26 @@
   font-size: 0.85rem;
   color: var(--text-muted);
   letter-spacing: 0.05em;
-  font-family: 'Unique', sans-serif;
+  font-family: 'Fraunces', serif;
 }
 
 .resume__timeline-title {
-  font-family: 'Unique', sans-serif;
+  font-family: 'Fraunces', serif;
   font-size: 2rem;
   color: var(--blue-dark);
   line-height: 1.1;
 }
 
 .resume__timeline-company {
+  font-family: 'Bayon', sans-serif;
   font-size: 1rem;
   color: var(--accent, var(--blue)); /* Color the subtitle with accent */
   letter-spacing: 0.02em;
+}
+
+.resume__back-button {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 5;
 }

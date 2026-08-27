@@ -1,13 +1,19 @@
 @import './tokens.css';
 
-/* ── Unique — accent font (all weights) ───────────────── */
-@font-face { font-family: 'Unique'; font-weight: 100; src: url('../public/fonts/unique/Unique-Thin.woff2')       format('woff2'); }
-@font-face { font-family: 'Unique'; font-weight: 200; src: url('../public/fonts/unique/Unique-ExtraLight.woff2') format('woff2'); }
-@font-face { font-family: 'Unique'; font-weight: 300; src: url('../public/fonts/unique/Unique-Light.woff2')      format('woff2'); }
-@font-face { font-family: 'Unique'; font-weight: 400; src: url('../public/fonts/unique/Unique-Regular.woff2')    format('woff2'); }
-@font-face { font-family: 'Unique'; font-weight: 500; src: url('../public/fonts/unique/Unique-Medium.woff2')     format('woff2'); }
-@font-face { font-family: 'Unique'; font-weight: 600; src: url('../public/fonts/unique/Unique-SemiBold.woff2')   format('woff2'); }
-@font-face { font-family: 'Unique'; font-weight: 700; src: url('../public/fonts/unique/Unique-Bold.woff2')       format('woff2'); }
+/* ── Fraunces — primary display font (variable) ────────── */
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 100 900;
+  src: url('../public/fonts/fraunces/Fraunces-Variable.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Fraunces';
+  font-style: italic;
+  font-weight: 100 900;
+  src: url('../public/fonts/fraunces/Fraunces-Italic-Variable.ttf') format('truetype');
+}
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -21,4 +27,3 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
-
