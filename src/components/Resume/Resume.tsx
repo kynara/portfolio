@@ -179,47 +179,59 @@ const Resume: React.FC = () => {
         <section className="resume__section" style={{ '--i': 0 } as React.CSSProperties}>
           <div className="resume__timeline" ref={timelineRef}>
             <div className="resume__timeline-track">
-              {timelineData.map((item, index) => (
-                <article
-                  key={`${item.title}-${index}`}
-                  className={`resume__timeline-item resume__timeline-item--${item.type} ${index === selectedIndex ? 'resume__timeline-item--selected' : ''}`}
-                  onClick={() => {
-                    if (dragMovedRef.current) {
-                      dragMovedRef.current = false;
-                      return;
-                    }
-                    selectItem(index);
-                  }}
-                  aria-current={index === selectedIndex ? 'true' : undefined}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(event) => {
-                   if (event.key === 'Enter' || event.key === ' ') {
-                     event.preventDefault();
-                     selectItem(index);
-                   }
-                  }}
-                >
-                  {index === selectedIndex ? (
-                    <svg className="resume__timeline-star" viewBox="0 0 100 100" aria-hidden="true">
-                      <path
-                        d="M50 6 L62 35 L94 40 L71 63 L78 94 L50 78 L22 94 L29 63 L6 40 L38 35 Z"
-                        fill="var(--accent, var(--blue))"
-                        stroke="var(--accent, var(--blue))"
-                        strokeWidth="4"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  ) : (
-                    <div className="resume__timeline-dot" aria-hidden />
-                  )}
-                  <div className="resume__timeline-meta">
-                    <span className="resume__timeline-company">{item.subtitle}</span>
-                    <span className="resume__timeline-title">{item.title}</span>
-                    <span className="resume__timeline-date">{item.date}</span>
-                  </div>
-                </article>
-              ))}
+              {timelineData.map((item, index) => {
+                const descriptionPlacement = item.type === 'work' ? 'below' : 'above';
+                const showDescription = index === selectedIndex && item.description && item.description.length > 0;
+
+                return (
+                  <article
+                    key={`${item.title}-${index}`}
+                    className={`resume__timeline-item resume__timeline-item--${item.type} ${index === selectedIndex ? 'resume__timeline-item--selected' : ''}`}
+                    onClick={() => {
+                      if (dragMovedRef.current) {
+                        dragMovedRef.current = false;
+                        return;
+                      }
+                      selectItem(index);
+                    }}
+                    aria-current={index === selectedIndex ? 'true' : undefined}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(event) => {
+                     if (event.key === 'Enter' || event.key === ' ') {
+                       event.preventDefault();
+                       selectItem(index);
+                     }
+                    }}
+                  >
+                    {index === selectedIndex ? (
+                      <svg className="resume__timeline-star" viewBox="0 0 100 100" aria-hidden="true">
+                        <path
+                          d="M50 6 L62 35 L94 40 L71 63 L78 94 L50 78 L22 94 L29 63 L6 40 L38 35 Z"
+                          fill="var(--accent, var(--blue))"
+                          stroke="var(--accent, var(--blue))"
+                          strokeWidth="4"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    ) : (
+                      <div className="resume__timeline-dot" aria-hidden />
+                    )}
+                    <div className="resume__timeline-meta">
+                      <span className="resume__timeline-company">{item.subtitle}</span>
+                      <span className="resume__timeline-title">{item.title}</span>
+                      <span className="resume__timeline-date">{item.date}</span>
+                    </div>
+                    {showDescription && (
+                      <ul className={`resume__timeline-description resume__timeline-description--${descriptionPlacement}`}>
+                        {item.description!.map((entry, descriptionIndex) => (
+                          <li key={`${item.title}-${descriptionIndex}`}>{entry}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>
