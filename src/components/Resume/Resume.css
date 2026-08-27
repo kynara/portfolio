@@ -3,6 +3,7 @@
 /* ── Page shell ───────────────────────────────────────── */
 .resume {
   --timeline-gap: clamp(9rem, 50vw, 100rem);
+  --timeline-item-width: clamp(300px, 50vw, 420px);
   position: relative;
   min-height: 100vh;
   background: var(--yellow-bg);
@@ -12,6 +13,11 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  cursor: grab;
+}
+
+.resume:active {
+  cursor: grabbing;
 }
 
 
@@ -38,7 +44,7 @@
 /* ── Section title ────────────────────────────────────── */
 .resume__section-title {
   font-family: 'Fraunces', serif;
-  font-size: 3rem;
+  font-size: 2rem;
   letter-spacing: 0.01em;
   text-transform: uppercase;
   color: var(--white);
@@ -67,7 +73,7 @@
   cursor: grab;
   scroll-snap-type: x mandatory;
   /* (50vw) - (Item 300px) - (Half Gap) = centered between item 1 and 2 */
-  scroll-padding-left: max(1rem, calc(50vw - 300px - (var(--timeline-gap) / 2)));
+  scroll-padding-left: max(1rem, calc(50vw - var(--timeline-item-width) - (var(--timeline-gap) / 2)));
 }
 .resume__timeline:active { cursor: grabbing; }
 .resume__timeline::-webkit-scrollbar { display: none; }
@@ -78,7 +84,7 @@
   display: flex;
   gap: var(--gap);
   /* Match scroll-padding-left for start, symmetrical for end */
-  padding: 0 max(1rem, calc(50vw - 300px - (var(--timeline-gap) / 2)));
+  padding: 0 max(1rem, calc(50vw - var(--timeline-item-width) - (var(--timeline-gap) / 2)));
   align-items: flex-start;
   width: max-content;
 }
@@ -91,10 +97,12 @@
 .resume__timeline-item {
   position: relative;
   flex: 0 0 auto;
-  width: 300px;
+  width: var(--timeline-item-width);
   padding-top: 4rem;
+  padding-bottom: 4rem;
   scroll-snap-align: start; /* Align to left of view (adjusted by scroll-padding) */
   scroll-snap-stop: always;
+  cursor: pointer;
 }
 
 /* ── Type Variations ──────────────────────────────────── */
@@ -104,15 +112,12 @@
 .resume__timeline-item--education { --accent: var(--red); }
 .resume__timeline-item--award     { --accent: var(--yellow); }
 
-/* Layout: Education & Awards go ABOVE the line */
-.resume__timeline-item--education .resume__timeline-meta,
-.resume__timeline-item--award .resume__timeline-meta {
+/* Layout: Work goes ABOVE the line; education/awards stay BELOW */
+.resume__timeline-item--work .resume__timeline-meta {
   position: absolute;
-  bottom: 2.5rem; /* Place above the dot (dot is ~2rem from top) */
+  bottom: 8.5rem;
   left: 0;
   width: 100%;
-  /* Reverse order so Date is at bottom (closest to line), matching 'below' symmetry */
-  flex-direction: column-reverse;
 }
 
 /* ── Dots & Lines ────────────────────────────────────── */
@@ -139,29 +144,46 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--bg-navy);
-  border: 2px solid var(--accent, var(--white)); /* Use type accent, default white */
+  background: var(--accent, var(--white));
+  border: none;
   position: absolute;
   top: 21px;
   left: 0;
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 1;
 }
 
+.resume__timeline-star {
+  position: absolute;
+  top: 15px;
+  left: -4px;
+  width: 22px;
+  height: 22px;
+  display: block;
+  z-index: 1;
+  transform: rotate(-6deg) scale(1.18);
+  transform-origin: center;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.12));
+}
+
 .resume__timeline-item:hover .resume__timeline-dot {
-  transform: scale(1.3);
-  background: var(--accent, var(--white)); /* Fill on hover */
+  transform: scale(1.5);
+}
+
+.resume__timeline-item--selected:hover .resume__timeline-star {
+  transform: rotate(-6deg) scale(1.32);
 }
 
 .resume__timeline-meta {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.2rem;
   text-align: left;
   color: var(--text-body);
   transition: opacity 0.3s;
   opacity: 0.7;
 }
+
 
 .resume__timeline-item:hover .resume__timeline-meta {
   opacity: 1;
@@ -176,14 +198,21 @@
 
 .resume__timeline-title {
   font-family: 'Fraunces', serif;
-  font-size: 2rem;
+  font-size: 1.5rem;
+  font-weight: 500;
   color: var(--blue-dark);
   line-height: 1.1;
+  transition: font-size 0.3s cubic-bezier(0.22, 1, 0.36, 1), font-weight 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.resume__timeline-item--selected .resume__timeline-title {
+  font-size: 1.65rem;
+  font-weight: 700;
 }
 
 .resume__timeline-company {
   font-family: 'Bayon', sans-serif;
-  font-size: 1rem;
+  font-size: 1.25rem;
   color: var(--accent, var(--blue)); /* Color the subtitle with accent */
   letter-spacing: 0.02em;
 }

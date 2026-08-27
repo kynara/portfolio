@@ -88,5 +88,11 @@ export const timelineData: TimelineItem[] = [
     title: '5th Place & Leepfrog Award',
     subtitle: 'UIowa Hackathon',
   },
+  {
+    type: 'award',
+    date: '',
+    title: '',
+    subtitle: '',
+  },
 ];
 
