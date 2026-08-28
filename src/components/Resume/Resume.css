@@ -16,12 +16,184 @@
   cursor: grab;
 }
 
+.resume__isu-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.resume__isu-image {
+  position: absolute;
+  opacity: 0;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.resume__caseys-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.resume__caseys-scene--logo-anchor {
+  z-index: 1;
+  overflow: visible;
+}
+
+.resume__caseys-image {
+  position: absolute;
+  opacity: 0;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.resume__caseys-image--logo {
+  top: -17rem;
+  left: -1rem;
+  width: 250px;
+}
+
+.resume__caseys-image--app {
+  top: 22%;
+  left: 30%;
+  width: clamp(120px, 14vw, 240px);
+  --caseys-app-angle: -20deg;
+  transform-origin: center;
+}
+
+.resume__caseys-image--store {
+  right: -1rem;
+  bottom: -1.8rem;
+  width: clamp(360px, 42vw, 680px);
+}
+
+.resume__caseys-scene--enter .resume__caseys-image--logo {
+  animation: resumeCaseysLogoIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+}
+
+.resume__caseys-scene--enter .resume__caseys-image--app {
+  animation: resumeCaseysAppIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
+
+.resume__caseys-scene--enter .resume__caseys-image--store {
+  animation: resumeCaseysStoreIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+}
+
+.resume__isu-image--logo {
+  left: -0.5rem;
+  bottom: -1.4rem;
+  width: clamp(130px, 14vw, 230px);
+}
+
+.resume__isu-image--cy {
+  top: -0.35rem;
+  left: 50%;
+  width: clamp(100px, 10vw, 170px);
+}
+
+.resume__isu-image--campanile {
+  right: 1rem;
+  bottom: -2.1rem;
+  width: clamp(130px, 12vw, 210px);
+}
+
+.resume__isu-scene--enter .resume__isu-image--logo {
+  animation: resumeIsuLogoIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+}
+
+.resume__isu-scene--enter .resume__isu-image--cy {
+  animation: resumeIsuCyIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+}
+
+.resume__isu-scene--enter .resume__isu-image--campanile {
+  animation: resumeIsuCampanileIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+}
+
+@keyframes resumeIsuLogoIn {
+  from {
+    opacity: 0;
+    transform: translate(-120%, 120%) rotate(60deg);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0) rotate(60deg);
+  }
+}
+
+@keyframes resumeIsuCyIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -180%) rotate(180deg);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) rotate(180deg);
+  }
+}
+
+@keyframes resumeIsuCampanileIn {
+  from {
+    opacity: 0;
+    transform: translateY(140%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes resumeCaseysLogoIn {
+  from {
+    opacity: 0;
+    transform: translateX(-160%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes resumeCaseysAppIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-6%) rotate(var(--caseys-app-angle)) scale(2.9);
+  }
+  48% {
+    opacity: 1;
+    transform: translateY(0) rotate(var(--caseys-app-angle)) scale(0.82);
+  }
+  95% {
+    transform: translateY(0) rotate(var(--caseys-app-angle)) scale(1.14);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(var(--caseys-app-angle)) scale(1);
+  }
+}
+
+@keyframes resumeCaseysStoreIn {
+  from {
+    opacity: 0;
+    transform: translate(115%, 115%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
 .resume:active {
   cursor: grabbing;
 }
 
 
 .resume__main {
+  position: relative;
+  z-index: 2;
   width: 100%;
   max-width: 100%;
   display: flex;
@@ -65,7 +237,8 @@
 
 .resume__timeline {
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: visible;
+  min-height: 40rem;
   padding: 15rem 0 5rem; /* More top padding for labels above timeline */
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -175,6 +348,8 @@
 }
 
 .resume__timeline-meta {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   gap: 0rem;

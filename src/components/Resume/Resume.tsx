@@ -8,6 +8,13 @@ import './Resume.css';
 const isPlaceholderItem = (item: { title: string; subtitle: string; date: string }) =>
   item.title.trim() === '' && item.subtitle.trim() === '' && item.date.trim() === '';
 
+const isIowaStateItem = (item: { title: string; subtitle: string }) =>
+  /\biowa state\b/i.test(item.subtitle) ||
+  /\bisu\b/i.test(item.subtitle) ||
+  /teaching assistant/i.test(item.title);
+
+const isCaseysItem = (item: { subtitle: string }) => /casey/i.test(item.subtitle);
+
 const Resume: React.FC = () => {
   const navigate = useNavigate();
   const timelineRef = useRef<HTMLDivElement>(null);
@@ -169,6 +176,10 @@ const Resume: React.FC = () => {
     };
   }, []);
 
+  const selectedItem = timelineData[selectedIndex];
+  const isSelectedIowaState = !!selectedItem && !isPlaceholderItem(selectedItem) && isIowaStateItem(selectedItem);
+  const isSelectedCaseys = !!selectedItem && !isPlaceholderItem(selectedItem) && isCaseysItem(selectedItem);
+
   return (
     <div className="resume">
       <div className="resume__back-button">
@@ -183,7 +194,27 @@ const Resume: React.FC = () => {
           Back
         </AwesomeBtn>
       </div>
-
+      {isSelectedIowaState && (
+        <div
+          key={`isu-scene-enter-${selectedIndex}`}
+          className="resume__isu-scene resume__isu-scene--enter"
+          aria-hidden="true"
+        >
+          <img src="/images/isu/isulogo.png" alt="" className="resume__isu-image resume__isu-image--logo" />
+          <img src="/images/isu/cy.png" alt="" className="resume__isu-image resume__isu-image--cy" />
+          <img src="/images/isu/campanile.png" alt="" className="resume__isu-image resume__isu-image--campanile" />
+        </div>
+      )}
+      {isSelectedCaseys && (
+        <div
+          key={`caseys-scene-enter-fixed-${selectedIndex}`}
+          className="resume__caseys-scene resume__caseys-scene--enter"
+          aria-hidden="true"
+        >
+          <img src="/images/caseys/app.png" alt="" className="resume__caseys-image resume__caseys-image--app" />
+          <img src="/images/caseys/store.png" alt="" className="resume__caseys-image resume__caseys-image--store" />
+        </div>
+      )}
       <main className="resume__main">
         <section className="resume__section" style={{ '--i': 0 } as React.CSSProperties}>
           <div className="resume__timeline" ref={timelineRef}>
@@ -192,6 +223,7 @@ const Resume: React.FC = () => {
                 const descriptionPlacement = item.type === 'work' ? 'below' : 'above';
                 const showDescription = index === selectedIndex && item.description && item.description.length > 0;
                 const isPlaceholder = isPlaceholderItem(item);
+                const showCaseysScene = index === selectedIndex && isCaseysItem(item);
 
                 return (
                   <article
@@ -228,6 +260,15 @@ const Resume: React.FC = () => {
                       </svg>
                     ) : (
                       <div className="resume__timeline-dot" aria-hidden />
+                    )}
+                    {showCaseysScene && (
+                      <div
+                        key={`caseys-scene-enter-logo-${selectedIndex}`}
+                        className="resume__caseys-scene resume__caseys-scene--logo-anchor resume__caseys-scene--enter"
+                        aria-hidden="true"
+                      >
+                        <img src="/images/caseys/caseys.png" alt="" className="resume__caseys-image resume__caseys-image--logo" />
+                      </div>
                     )}
                     <div className="resume__timeline-meta">
                       <span className="resume__timeline-company">{item.subtitle}</span>
