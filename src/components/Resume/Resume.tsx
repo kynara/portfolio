@@ -5,16 +5,25 @@ import { timelineData } from './Resume.data';
 import { colors } from '../../tokens';
 import './Resume.css';
 
+const isPlaceholderItem = (item: { title: string; subtitle: string; date: string }) =>
+  item.title.trim() === '' && item.subtitle.trim() === '' && item.date.trim() === '';
+
 const Resume: React.FC = () => {
   const navigate = useNavigate();
   const timelineRef = useRef<HTMLDivElement>(null);
   const dragMovedRef = useRef(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const lastSelectableIndex = timelineData.reduce(
+    (lastIndex, item, index) => (isPlaceholderItem(item) ? lastIndex : index),
+    0,
+  );
+  const clampSelectableIndex = (index: number) => Math.max(0, Math.min(lastSelectableIndex, index));
 
   const selectItem = (index: number) => {
-    const target = timelineRef.current?.querySelectorAll<HTMLElement>('.resume__timeline-item')[index];
+    const targetIndex = clampSelectableIndex(index);
+    const target = timelineRef.current?.querySelectorAll<HTMLElement>('.resume__timeline-item')[targetIndex];
     if (!target) return;
-    setSelectedIndex(index);
+    setSelectedIndex(targetIndex);
     target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
   };
 
@@ -68,8 +77,8 @@ const Resume: React.FC = () => {
 
       const direction = delta > 0 ? 1 : -1;
       const items = getItems();
-      const closestIndex = getClosestIndexToSnapLine();
-      const targetIndex = Math.min(items.length - 1, Math.max(0, closestIndex + direction));
+      const closestIndex = clampSelectableIndex(getClosestIndexToSnapLine());
+      const targetIndex = clampSelectableIndex(closestIndex + direction);
 
       if (targetIndex === closestIndex) return;
 
@@ -92,7 +101,7 @@ const Resume: React.FC = () => {
       scrollRaf = window.requestAnimationFrame(() => {
         scrollRaf = 0;
         setSelectedIndex((prev) => {
-          const closest = getClosestIndexToSnapLine();
+          const closest = clampSelectableIndex(getClosestIndexToSnapLine());
           return prev === closest ? prev : closest;
         });
       });
@@ -103,7 +112,7 @@ const Resume: React.FC = () => {
       if (target?.closest('button, a, .resume__back-button')) return;
 
       const item = target?.closest('.resume__timeline-item');
-      if (item) {
+      if (item && !item.classList.contains('resume__timeline-item--placeholder')) {
         dragStartedOnItem = true;
         dragMovedRef.current = false;
         return;
@@ -182,22 +191,25 @@ const Resume: React.FC = () => {
               {timelineData.map((item, index) => {
                 const descriptionPlacement = item.type === 'work' ? 'below' : 'above';
                 const showDescription = index === selectedIndex && item.description && item.description.length > 0;
+                const isPlaceholder = isPlaceholderItem(item);
 
                 return (
                   <article
                     key={`${item.title}-${index}`}
-                    className={`resume__timeline-item resume__timeline-item--${item.type} ${index === selectedIndex ? 'resume__timeline-item--selected' : ''}`}
+                    className={`resume__timeline-item resume__timeline-item--${item.type} ${index === selectedIndex ? 'resume__timeline-item--selected' : ''} ${isPlaceholder ? 'resume__timeline-item--placeholder' : ''}`}
                     onClick={() => {
-                      if (dragMovedRef.current) {
-                        dragMovedRef.current = false;
-                        return;
-                      }
-                      selectItem(index);
+                     if (isPlaceholder) return;
+                     if (dragMovedRef.current) {
+                       dragMovedRef.current = false;
+                       return;
+                     }
+                     selectItem(index);
                     }}
-                    aria-current={index === selectedIndex ? 'true' : undefined}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(event) => {
+                    aria-current={index === selectedIndex && !isPlaceholder ? 'true' : undefined}
+                    aria-disabled={isPlaceholder ? 'true' : undefined}
+                    role={isPlaceholder ? undefined : 'button'}
+                    tabIndex={isPlaceholder ? -1 : 0}
+                    onKeyDown={isPlaceholder ? undefined : (event) => {
                      if (event.key === 'Enter' || event.key === ' ') {
                        event.preventDefault();
                        selectItem(index);

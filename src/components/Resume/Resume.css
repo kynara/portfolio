@@ -105,8 +105,8 @@
   cursor: pointer;
 }
 
-.resume__timeline-item--selected {
-  padding-bottom: 0;
+.resume__timeline-item--placeholder {
+  cursor: default;
 }
 
 /* ── Type Variations ──────────────────────────────────── */
@@ -209,7 +209,7 @@
 }
 
 .resume__timeline-item--work .resume__timeline-description--below {
-  top: calc(100% + 0.1rem);
+  top: 2.6rem;
 }
 
 .resume__timeline-item--education .resume__timeline-description--above,
