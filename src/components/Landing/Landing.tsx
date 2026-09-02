@@ -11,6 +11,13 @@ interface IconData {
   src: string;
 }
 
+const ROUTE_COLORS: Record<string, string> = {
+  '/blog': '#130477',
+  '/resume': '#fff3b0',
+  '/contact': '#dd0426',
+  default: '#5478ff',
+};
+
 const ICONS: IconData[] = [
   { id: 'writer', label: 'blog', path: '/blog', src: '/icons/writer.png' },
   { id: 'resume', label: 'resume', path: '/resume', src: '/icons/resume.png' },
@@ -21,6 +28,7 @@ const Landing: React.FC = () => {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>('idle');
   const [dragGuidePath, setDragGuidePath] = useState<string | null>(null);
+  const [circleColor, setCircleColor] = useState<string>(ROUTE_COLORS.default);
   const mouthRef = useRef<HTMLDivElement>(null);
 
   // Create refs for each icon statically since ICONS length is static
@@ -32,6 +40,7 @@ const Landing: React.FC = () => {
 
   const handleDropSuccess = useCallback((path: string) => {
     setPhase('clicked');
+    setCircleColor(ROUTE_COLORS[path] ?? ROUTE_COLORS.default);
     setTimeout(() => navigate(path), 1000);
   }, [navigate]);
 
@@ -128,7 +137,10 @@ const Landing: React.FC = () => {
   };
 
   return (
-    <div className={`landing landing--${phase}`}>
+    <div
+      className={`landing landing--${phase}`}
+      style={{ ['--circle-color' as any]: circleColor }}
+    >
       {/* Background Text */}
       <div className="landing__bg-text" aria-hidden="true">
         <span className="landing__bg-text-line1">YOU ARE</span>
@@ -138,14 +150,26 @@ const Landing: React.FC = () => {
 
       <div className="landing__circle" />
 
-      <div className={`landing__face ${phase === 'clicked' ? 'landing__face--shrink' : ''}`}>
-        <img
-          src={imgSrc}
-          alt=""
-          className="landing__face-img"
-          draggable={false}
-        />
-        <div className="landing__mouth-target" ref={mouthRef} />
+      <div className="landing__face-wrap">
+        <div className={`landing__face ${phase === 'clicked' ? 'landing__face--shrink' : ''}`}>
+          <svg className="landing__head-arc-text" viewBox="0 -70 400 260" aria-hidden="true">
+            <defs>
+              <path id="landing-head-arc" d="M 40 170 A 160 160 0 0 1 360 170" />
+            </defs>
+            <text textAnchor="middle">
+              <textPath href="#landing-head-arc" startOffset="50%">
+                YOU ARE WHAT YOU EAT
+              </textPath>
+            </text>
+          </svg>
+          <img
+            src={imgSrc}
+            alt=""
+            className="landing__face-img"
+            draggable={false}
+          />
+          <div className="landing__mouth-target" ref={mouthRef} />
+        </div>
       </div>
 
       {dragGuidePath && (
@@ -166,24 +190,53 @@ const Landing: React.FC = () => {
         </svg>
       )}
 
-      <div className="landing__icons-container">
-        <p className="landing__icons-instruction">Feed me an icon to navigate</p>
-        {ICONS.map((icon, index) => {
-          const imgRef = iconRefs[index];
-          return (
-            <div key={icon.id} className="landing__icon-wrapper">
-              <img
-                ref={imgRef}
-                src={icon.src}
-                alt={icon.label}
-                className="landing__icon-img"
-                onPointerDown={(e) => startDrag(e, icon, imgRef)}
-                draggable={false}
-              />
-              <span className="landing__icon-label">{icon.label}</span>
-            </div>
-          );
-        })}
+      <div className="landing__plate" aria-label="Navigation menu">
+        <img src="/images/white-plate.png" alt="" className="landing__plate-bg" />
+        <svg className="landing__plate-text" viewBox="0 0 420 420" aria-hidden="true">
+          <defs>
+            <path id="landing-plate-arc-desktop" d="M 210 24 A 186 186 0 0 0 210 396" />
+            {/* True rim-radius circle (same center/radius family as the desktop
+                arc) so the text actually rides the plate's rim, not an
+                invented flat curve. Centered on the pole via startOffset 50%
+                + text-anchor middle since only the top of the plate is visible. */}
+            <path id="landing-plate-arc-mobile" d="M 24 210 A 186 186 0 0 1 396 210" />
+          </defs>
+          {/* side="right" flips the glyphs onto the outward-facing side of the
+              arc — without it, text riding this curve renders upside-down. */}
+          <text className="landing__plate-text-desktop">
+            <textPath href="#landing-plate-arc-desktop" startOffset="4%" {...{ side: 'right' }}>
+              FEED ME TO NAVIGATE •
+            </textPath>
+          </text>
+          <text className="landing__plate-text-mobile">
+            <textPath href="#landing-plate-arc-mobile" startOffset="50%" textAnchor="middle">
+              FEED ME TO NAVIGATE •
+            </textPath>
+          </text>
+        </svg>
+
+        <div className="landing__plate-items">
+          {ICONS.map((icon, index) => {
+            const imgRef = iconRefs[index];
+            const variantClass = index === 0 ? 'landing__icon-wrapper--first'
+                              : index === 1 ? 'landing__icon-wrapper--middle'
+                              : 'landing__icon-wrapper--third';
+
+            return (
+              <div key={icon.id} className={`landing__icon-wrapper ${variantClass}`}>
+                <img
+                  ref={imgRef}
+                  src={icon.src}
+                  alt={icon.label}
+                  className="landing__icon-img"
+                  onPointerDown={(e) => startDrag(e, icon, imgRef)}
+                  draggable={false}
+                />
+                <span className="landing__icon-label">{icon.label}</span>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
