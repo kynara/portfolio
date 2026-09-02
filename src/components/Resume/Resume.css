@@ -16,101 +16,144 @@
   cursor: grab;
 }
 
-.resume__isu-scene {
+/* ── Company scenes ───────────────────────────────────────
+   Anchored to the selected .resume__timeline-item article (position:
+   absolute, inset:0), the same box the dot/star/line are drawn against.
+   The connecting line sits at top:27px in that box (see ::after below),
+   so every image's `top` here is authored relative to that number —
+   straddling it deliberately rather than sitting to one side of it. */
+.resume__scene {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  overflow: hidden;
-}
-
-.resume__isu-image {
-  position: absolute;
-  opacity: 0;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-}
-
-.resume__caseys-scene {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.resume__caseys-scene--logo-anchor {
-  z-index: 1;
   overflow: visible;
 }
 
-.resume__caseys-image {
+.resume__scene-img {
   position: absolute;
   opacity: 0;
   will-change: transform, opacity;
   backface-visibility: hidden;
 }
 
-.resume__caseys-image--logo {
-  top: -17rem;
-  left: -1rem;
-  width: 250px;
+/* Iowa State — campanile is the tall hero, planted through the line;
+   Cy stands with his feet just under it; the wordmark peeks above it. */
+.resume__scene-img--isu-campanile {
+  top: -70px;
+  right: -0.5rem;
+  width: clamp(140px, 11vw, 200px);
 }
 
-.resume__caseys-image--app {
-  top: 22%;
-  left: 30%;
-  width: clamp(120px, 14vw, 240px);
+.resume__scene-img--isu-cy {
+  top: -95px;
+  left: 2%;
+  width: clamp(90px, 8vw, 140px);
+}
+
+.resume__scene-img--isu-logo {
+  top: -12px;
+  left: 40%;
+  width: clamp(70px, 6vw, 110px);
+}
+
+.resume__scene--isu.resume__scene--enter .resume__scene-img--isu-logo {
+  animation: resumeIsuLogoIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+}
+
+.resume__scene--isu.resume__scene--enter .resume__scene-img--isu-cy {
+  animation: resumeIsuCyIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+}
+
+.resume__scene--isu.resume__scene--enter .resume__scene-img--isu-campanile {
+  animation: resumeIsuCampanileIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+}
+
+/* Casey's — logo crosses high on the left, the phone screenshot rides
+   the line dead center, the storefront rises through it on the right. */
+.resume__scene-img--caseys-logo {
+  top: -19px;
+  left: -1rem;
+  width: clamp(140px, 12vw, 220px);
+}
+
+.resume__scene-img--caseys-app {
+  top: -84px;
+  left: 44%;
+  width: clamp(90px, 8vw, 140px);
   --caseys-app-angle: -20deg;
   transform-origin: center;
 }
 
-.resume__caseys-image--store {
-  right: -1rem;
-  bottom: -1.8rem;
-  width: clamp(360px, 42vw, 680px);
+.resume__scene-img--caseys-store {
+  top: -20px;
+  right: -0.5rem;
+  width: clamp(220px, 20vw, 360px);
 }
 
-.resume__caseys-scene--enter .resume__caseys-image--logo {
+.resume__scene--caseys.resume__scene--enter .resume__scene-img--caseys-logo {
   animation: resumeCaseysLogoIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
 }
 
-.resume__caseys-scene--enter .resume__caseys-image--app {
+.resume__scene--caseys.resume__scene--enter .resume__scene-img--caseys-app {
   animation: resumeCaseysAppIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
 }
 
-.resume__caseys-scene--enter .resume__caseys-image--store {
+.resume__scene--caseys.resume__scene--enter .resume__scene-img--caseys-store {
   animation: resumeCaseysStoreIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
 }
 
-.resume__isu-image--logo {
-  left: 0;
-  bottom: -0.5rem;
-  width: clamp(300px, 14vw, 300px);
+/* Dave — the bear stands astride the line; the app panel rides it
+   just to the right, tilted like a dropped photo. */
+.resume__scene-img--dave-bear {
+  top: -77px;
+  left: 4%;
+  width: clamp(110px, 10vw, 170px);
 }
 
-.resume__isu-image--cy {
-  top: -0.4rem;
-  left: 50%;
-  width: clamp(200px, 10vw, 200px);
+.resume__scene-img--dave-app {
+  top: -47px;
+  right: -0.5rem;
+  width: clamp(160px, 15vw, 260px);
+  rotate: 4deg;
 }
 
-.resume__isu-image--campanile {
-  right: 0.5rem;
-  bottom: -7rem;
-  width: clamp(450px, 12vw, 450px);
+.resume__scene--dave.resume__scene--enter .resume__scene-img--dave-bear {
+  animation: resumeSceneRise 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
 }
 
-.resume__isu-scene--enter .resume__isu-image--logo {
-  animation: resumeIsuLogoIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+.resume__scene--dave.resume__scene--enter .resume__scene-img--dave-app {
+  animation: resumeSceneRise 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
 }
 
-.resume__isu-scene--enter .resume__isu-image--cy {
-  animation: resumeIsuCyIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+/* Single-logo companies — each logo is centered directly on the line. */
+.resume__scene-img--bayada-logo {
+  top: -23px;
+  left: 6%;
+  width: clamp(160px, 14vw, 240px);
 }
 
-.resume__isu-scene--enter .resume__isu-image--campanile {
-  animation: resumeIsuCampanileIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+.resume__scene-img--workiva-logo {
+  top: 1px;
+  right: 0;
+  width: clamp(180px, 16vw, 280px);
+}
+
+.resume__scene-img--ct-logo {
+  top: -19px;
+  left: 8%;
+  width: clamp(150px, 13vw, 220px);
+}
+
+.resume__scene--bayada.resume__scene--enter .resume__scene-img--bayada-logo,
+.resume__scene--workiva.resume__scene--enter .resume__scene-img--workiva-logo,
+.resume__scene--ct.resume__scene--enter .resume__scene-img--ct-logo {
+  animation: resumeSceneRise 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+}
+
+@keyframes resumeSceneRise {
+  from { opacity: 0; transform: translateY(20px) scale(0.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes resumeIsuLogoIn {
@@ -244,7 +287,11 @@
   -ms-overflow-style: none;
   width: 100%;
   cursor: grab;
-  scroll-snap-type: x mandatory;
+  /* Snapping is handled in JS (Resume.tsx), not via scroll-snap-type: that
+     CSS property was forcing an instant snap-back on every programmatic
+     scrollLeft write — including the ones the drag and wheel handlers make
+     continuously — so dragging or wheel-scrolling fought itself instead of
+     tracking the pointer/gesture smoothly. */
   /* (50vw) - (Item 300px) - (Half Gap) = centered between item 1 and 2 */
   scroll-padding-left: max(1rem, calc(50vw - var(--timeline-item-width) - (var(--timeline-gap) / 2)));
 }
@@ -273,8 +320,6 @@
   width: var(--timeline-item-width);
   padding-top: 4rem;
   padding-bottom: 4rem;
-  scroll-snap-align: start; /* Align to left of view (adjusted by scroll-padding) */
-  scroll-snap-stop: always;
   cursor: pointer;
 }
 

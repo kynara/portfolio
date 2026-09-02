@@ -10,10 +10,13 @@ const isPlaceholderItem = (item: { title: string; subtitle: string; date: string
 
 const isIowaStateItem = (item: { title: string; subtitle: string }) =>
   /\biowa state\b/i.test(item.subtitle) ||
-  /\bisu\b/i.test(item.subtitle) ||
   /teaching assistant/i.test(item.title);
 
 const isCaseysItem = (item: { subtitle: string }) => /casey/i.test(item.subtitle);
+const isDaveItem = (item: { subtitle: string }) => /\bdave\b/i.test(item.subtitle);
+const isBayadaItem = (item: { subtitle: string }) => /bayada/i.test(item.subtitle);
+const isWorkivaItem = (item: { subtitle: string }) => /workiva/i.test(item.subtitle);
+const isCriticalTinkersItem = (item: { subtitle: string }) => /critical tinkers/i.test(item.subtitle);
 
 const Resume: React.FC = () => {
   const navigate = useNavigate();
@@ -41,14 +44,14 @@ const Resume: React.FC = () => {
     const dragSurface = node.closest('.resume') as HTMLElement | null;
     if (!dragSurface) return;
 
-    let isScrolling = false;
-    let scrollTimeout: NodeJS.Timeout;
     let scrollRaf = 0;
     let isDragging = false;
     let dragStartX = 0;
     let dragStartScrollLeft = 0;
     let dragStartedOnItem = false;
+    let wheelSettleTimeout: NodeJS.Timeout;
     const dragThreshold = 8;
+    const settleDelay = 140;
 
     const getItems = () => Array.from(node.querySelectorAll<HTMLElement>('.resume__timeline-item'));
 
@@ -75,32 +78,33 @@ const Resume: React.FC = () => {
       return closestIndex;
     };
 
+    // Smoothly finish on whichever item is closest to the snap line. Used
+    // after both wheel and drag gestures, since scroll-snap-type was removed
+    // from the CSS (see Resume.css) — it was forcing an instant snap-back on
+    // every programmatic scrollLeft write, fighting the drag/wheel handlers
+    // that write to it continuously. Settling is handled here instead, only
+    // once the gesture actually ends.
+    const settleToClosest = () => {
+      const closest = clampSelectableIndex(getClosestIndexToSnapLine());
+      setSelectedIndex(closest);
+      getItems()[closest]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    };
+
+    // Vertical wheel input drives horizontal scroll 1:1, continuously — a plain
+    // mouse wheel only ever reports deltaY, so without this a wheel over the
+    // timeline would do nothing. Previously this forced exactly one card-step
+    // per gesture with a 600ms input lockout after each step (real scroll-jacking:
+    // a normal continuous trackpad scroll got swallowed into a single hop, then
+    // went dead for the rest of the gesture, with nothing else visibly changing).
+    // Now the raw delta is translated continuously — the user stays in control
+    // of position for the whole gesture — and it settles on the nearest item
+    // once the wheel goes quiet.
     const onWheel = (event: WheelEvent) => {
+      if (isDragging) return;
       event.preventDefault();
-      if (isScrolling || isDragging) return;
-
-      const delta = event.deltaY + event.deltaX;
-      if (Math.abs(delta) < 10) return;
-
-      const direction = delta > 0 ? 1 : -1;
-      const items = getItems();
-      const closestIndex = clampSelectableIndex(getClosestIndexToSnapLine());
-      const targetIndex = clampSelectableIndex(closestIndex + direction);
-
-      if (targetIndex === closestIndex) return;
-
-      setSelectedIndex(targetIndex);
-      isScrolling = true;
-      items[targetIndex].scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'start',
-      });
-
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        isScrolling = false;
-      }, 600);
+      node.scrollLeft += event.deltaY + event.deltaX;
+      clearTimeout(wheelSettleTimeout);
+      wheelSettleTimeout = setTimeout(settleToClosest, settleDelay);
     };
 
     const onScroll = () => {
@@ -151,6 +155,7 @@ const Resume: React.FC = () => {
       if (!isDragging) return;
       isDragging = false;
       dragSurface.releasePointerCapture(event.pointerId);
+      if (dragMovedRef.current) settleToClosest();
 
       window.setTimeout(() => {
         dragMovedRef.current = false;
@@ -171,14 +176,10 @@ const Resume: React.FC = () => {
       dragSurface.removeEventListener('pointermove', onPointerMove);
       dragSurface.removeEventListener('pointerup', onPointerUp);
       dragSurface.removeEventListener('pointerleave', onPointerUp);
-      clearTimeout(scrollTimeout);
+      clearTimeout(wheelSettleTimeout);
       if (scrollRaf) window.cancelAnimationFrame(scrollRaf);
     };
   }, []);
-
-  const selectedItem = timelineData[selectedIndex];
-  const isSelectedIowaState = !!selectedItem && !isPlaceholderItem(selectedItem) && isIowaStateItem(selectedItem);
-  const isSelectedCaseys = !!selectedItem && !isPlaceholderItem(selectedItem) && isCaseysItem(selectedItem);
 
   return (
     <div className="resume">
@@ -194,27 +195,6 @@ const Resume: React.FC = () => {
           Back
         </AwesomeBtn>
       </div>
-      {isSelectedIowaState && (
-        <div
-          key={`isu-scene-enter-${selectedIndex}`}
-          className="resume__isu-scene resume__isu-scene--enter"
-          aria-hidden="true"
-        >
-          <img src="/images/isu/isulogo.png" alt="" className="resume__isu-image resume__isu-image--logo" />
-          <img src="/images/isu/cy.png" alt="" className="resume__isu-image resume__isu-image--cy" />
-          <img src="/images/isu/campanile.png" alt="" className="resume__isu-image resume__isu-image--campanile" />
-        </div>
-      )}
-      {isSelectedCaseys && (
-        <div
-          key={`caseys-scene-enter-fixed-${selectedIndex}`}
-          className="resume__caseys-scene resume__caseys-scene--enter"
-          aria-hidden="true"
-        >
-          <img src="/images/caseys/app.png" alt="" className="resume__caseys-image resume__caseys-image--app" />
-          <img src="/images/caseys/store.png" alt="" className="resume__caseys-image resume__caseys-image--store" />
-        </div>
-      )}
       <main className="resume__main">
         <section className="resume__section" style={{ '--i': 0 } as React.CSSProperties}>
           <div className="resume__timeline" ref={timelineRef}>
@@ -223,7 +203,13 @@ const Resume: React.FC = () => {
                 const descriptionPlacement = item.type === 'work' ? 'below' : 'above';
                 const showDescription = index === selectedIndex && item.description && item.description.length > 0;
                 const isPlaceholder = isPlaceholderItem(item);
-                const showCaseysScene = index === selectedIndex && isCaseysItem(item);
+                const isSelected = index === selectedIndex;
+                const showIsuScene = isSelected && isIowaStateItem(item);
+                const showCaseysScene = isSelected && isCaseysItem(item);
+                const showDaveScene = isSelected && isDaveItem(item);
+                const showBayadaScene = isSelected && isBayadaItem(item);
+                const showWorkivaScene = isSelected && isWorkivaItem(item);
+                const showCriticalTinkersScene = isSelected && isCriticalTinkersItem(item);
 
                 return (
                   <article
@@ -261,13 +247,44 @@ const Resume: React.FC = () => {
                     ) : (
                       <div className="resume__timeline-dot" aria-hidden />
                     )}
+                    {/* Every scene below is anchored to this article (position:absolute
+                        inset:0), so each image's top/left values are authored directly
+                        against the timeline line at top:27px — the images can then
+                        reliably straddle the line instead of drifting off it whenever
+                        the page's vertical centering shifts with viewport height. */}
+                    {showIsuScene && (
+                      <div key={`isu-scene-${selectedIndex}`} className="resume__scene resume__scene--isu resume__scene--enter" aria-hidden="true">
+                        <img src="/images/isu/campanile.png" alt="" className="resume__scene-img resume__scene-img--isu-campanile" />
+                        <img src="/images/isu/cy.png" alt="" className="resume__scene-img resume__scene-img--isu-cy" />
+                        <img src="/images/isu/isulogo.png" alt="" className="resume__scene-img resume__scene-img--isu-logo" />
+                      </div>
+                    )}
                     {showCaseysScene && (
-                      <div
-                        key={`caseys-scene-enter-logo-${selectedIndex}`}
-                        className="resume__caseys-scene resume__caseys-scene--logo-anchor resume__caseys-scene--enter"
-                        aria-hidden="true"
-                      >
-                        <img src="/images/caseys/caseys.png" alt="" className="resume__caseys-image resume__caseys-image--logo" />
+                      <div key={`caseys-scene-${selectedIndex}`} className="resume__scene resume__scene--caseys resume__scene--enter" aria-hidden="true">
+                        <img src="/images/caseys/caseys.png" alt="" className="resume__scene-img resume__scene-img--caseys-logo" />
+                        <img src="/images/caseys/app.png" alt="" className="resume__scene-img resume__scene-img--caseys-app" />
+                        <img src="/images/caseys/store.png" alt="" className="resume__scene-img resume__scene-img--caseys-store" />
+                      </div>
+                    )}
+                    {showDaveScene && (
+                      <div key={`dave-scene-${selectedIndex}`} className="resume__scene resume__scene--dave resume__scene--enter" aria-hidden="true">
+                        <img src="/images/dave/dave-bear.webp" alt="" className="resume__scene-img resume__scene-img--dave-bear" />
+                        <img src="/images/dave/app.png" alt="" className="resume__scene-img resume__scene-img--dave-app" />
+                      </div>
+                    )}
+                    {showBayadaScene && (
+                      <div key={`bayada-scene-${selectedIndex}`} className="resume__scene resume__scene--bayada resume__scene--enter" aria-hidden="true">
+                        <img src="/images/bayada/bayadalogo.png" alt="" className="resume__scene-img resume__scene-img--bayada-logo" />
+                      </div>
+                    )}
+                    {showWorkivaScene && (
+                      <div key={`workiva-scene-${selectedIndex}`} className="resume__scene resume__scene--workiva resume__scene--enter" aria-hidden="true">
+                        <img src="/images/workivalogo.png" alt="" className="resume__scene-img resume__scene-img--workiva-logo" />
+                      </div>
+                    )}
+                    {showCriticalTinkersScene && (
+                      <div key={`ct-scene-${selectedIndex}`} className="resume__scene resume__scene--ct resume__scene--enter" aria-hidden="true">
+                        <img src="/images/criticaltinkers/CT Logo Filled.svg" alt="" className="resume__scene-img resume__scene-img--ct-logo" />
                       </div>
                     )}
                     <div className="resume__timeline-meta">
