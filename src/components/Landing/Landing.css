@@ -28,32 +28,35 @@
   z-index: 0;
   pointer-events: none;
   font-family: 'Bayon', sans-serif;
-  color: rgba(255, 228, 92, 0.8);
+  color: rgba(255, 228, 92, 0.9);
   line-height: 0.7;
   text-transform: uppercase;
   user-select: none;
   height: 100vh;
   overflow: hidden;
-  transform: translateX(-0.5rem);
+  transform: translateX(0.5rem);
 }
 
+/* Sized off the smaller of viewport height/width so the heading can't
+   balloon on tall-but-narrow viewports (portrait tablets, unmaximized
+   windows) the way a pure vh clamp would. */
 .landing__bg-text-line1 {
-  font-size: clamp(7.2rem, 24vh, 24rem);
+  font-size: clamp(7.9rem, min(26.5vh, 17vw), 26.5rem);
   letter-spacing: -0.12em;
   white-space: nowrap;
   opacity: 0.9;
 }
 
 .landing__bg-text-line2 {
-  font-size: clamp(12rem, 42vh, 38rem);
+  font-size: clamp(13.3rem, min(46vh, 30vw), 41rem);
   letter-spacing: -0.1em;
   white-space: nowrap;
-  margin-left: 0.15em;
-  opacity: 0.95;
+  margin-left: 0.07em;
+  opacity: 0.9;
 }
 
 .landing__bg-text-line3 {
-  font-size: clamp(7.5rem, 24vh, 24rem);
+  font-size: clamp(8.3rem, min(26.5vh, 17vw), 26.5rem);
   letter-spacing: -0.11em;
   white-space: nowrap;
   opacity: 0.9;
@@ -66,6 +69,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  /* Nudged off-center so it clears the big "WHAT" behind it; reset on
+     mobile, where the bg text is hidden in favor of the head-arc text. */
+  transform: translateX(7vw);
 }
 
 /* Curved "YOU ARE WHAT YOU EAT" that arcs over the head on small screens —
@@ -101,6 +107,10 @@
     font-size: 62px;
   }
 
+  .landing__face-wrap {
+    transform: none;
+  }
+
   .landing__face {
     height: clamp(340px, 85vw, 560px);
     margin-top: -14vh;
@@ -125,8 +135,10 @@
   position: absolute;
   right: 0;
   top: 50%;
-  width: clamp(420px, 92vh, 1000px);
-  height: clamp(420px, 92vh, 1000px);
+  /* Capped by width as well as height so it can't balloon on tall-but-narrow
+     viewports (portrait tablets) the way a pure vh clamp would. */
+  width: clamp(420px, min(92vh, 65vw), 1000px);
+  height: clamp(420px, min(92vh, 65vw), 1000px);
   /* Shift right by half the plate's own width so only its left half
      renders inside the page's clipped bounds — a half-plate sliding in. */
   transform: translate(50%, -50%);
@@ -252,10 +264,12 @@
     top: auto;
     bottom: 0;
     /* Shift down so only the top ~32% of the plate renders above the
-       page's clipped bottom edge — a bigger plate, mostly off-screen. */
+       page's clipped bottom edge — a bigger plate, mostly off-screen.
+       Capped by height as well as width so short/landscape phones don't
+       get a plate that swallows the whole viewport. */
     transform: translate(-50%, 68%);
-    width: clamp(510px, 162vw, 1050px);
-    height: clamp(510px, 162vw, 1050px);
+    width: clamp(510px, min(162vw, 90vh), 1050px);
+    height: clamp(510px, min(162vw, 90vh), 1050px);
   }
 
   .landing__icon-img {
@@ -312,7 +326,7 @@
   border-radius: 50%;
   background-color: var(--circle-color);
   transform: translate(-50%, -50%) scale(0);
-  z-index: 1;
+  z-index: 11;
   pointer-events: none;
 }
 
