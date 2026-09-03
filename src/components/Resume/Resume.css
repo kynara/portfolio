@@ -4,10 +4,18 @@
 .resume {
   --timeline-gap: clamp(20rem, 40vw, 100rem);
   --timeline-item-width: clamp(300px, 50vw, 420px);
+  /* --text-body/--text-muted (tokens.css) were built for the dark navy
+     background this page used previously (--bg-navy) — against the pale
+     --yellow-bg it actually uses, --text-body lands at ~1.8:1 contrast,
+     badly failing the 4.5:1 body-text minimum. --resume-ink is a dark
+     slate scoped to this page so the fix doesn't touch other pages that
+     still correctly pair --text-body with a dark surface. */
+  --resume-ink: #3d4655;
+  --resume-ink-muted: #5b6472;
   position: relative;
   min-height: 100vh;
   background: var(--yellow-bg);
-  color: var(--text-body);
+  color: var(--resume-ink);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   padding: 0;
   display: flex;
@@ -17,44 +25,73 @@
 }
 
 /* ── Company scenes ───────────────────────────────────────
-   Anchored to the selected .resume__timeline-item article (position:
-   absolute, inset:0), the same box the dot/star/line are drawn against.
-   The connecting line sits at top:27px in that box (see ::after below),
-   so every image's `top` here is authored relative to that number —
-   straddling it deliberately rather than sitting to one side of it. */
+   A full-page ambient backdrop for whichever entry is selected — the
+   theme of what's currently being read, not a decoration next to it.
+   Anchored to .resume itself (position:absolute inset:0, viewport-sized),
+   NOT the scrolling timeline, so it stays put as a backdrop while the
+   timeline slides underneath it. Every image lives in the page's corners
+   and edges; the text column (left ~300-420px, see --timeline-item-width)
+   is left clear on purpose, and .resume__text-scrim (below) backs that up
+   with a soft gradient regardless of viewport width. */
 .resume__scene {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .resume__scene-img {
   position: absolute;
   opacity: 0;
+  filter: drop-shadow(0 16px 32px rgba(61, 70, 85, 0.16));
   will-change: transform, opacity;
   backface-visibility: hidden;
 }
 
-/* Iowa State — campanile is the tall hero, planted through the line;
-   Cy stands with his feet just under it; the wordmark peeks above it. */
+/* Protects the text column: solid over where title/date/description
+   render, fading out before the scene imagery starts. Only spans the
+   vertical band text actually occupies (roughly 34%-69% of viewport
+   height, measured) — the top/bottom margins stay clear so corner
+   accents (Cy, the various logos) aren't erased by it. Sits above the
+   scene images (same z-index, later in source) but below the text. */
+.resume__text-scrim {
+  position: absolute;
+  top: 22%;
+  bottom: 22%;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    var(--yellow-bg) 0%,
+    var(--yellow-bg) 36%,
+    transparent 66%
+  );
+}
+
+/* Iowa State — campanile rises straight up bottom-right, its base
+   slightly off-screen. Cy hangs upside-down at top-center, dropped in
+   from directly above — since cy.png is him mid-stride, inverted he
+   reads as walking along the top edge like it's the ceiling. The
+   wordmark slides in bottom-left at a fixed 60° tilt and stays there. */
 .resume__scene-img--isu-campanile {
-  top: -70px;
-  right: -0.5rem;
-  width: clamp(140px, 11vw, 200px);
+  bottom: -3vh;
+  right: -1vw;
+  width: clamp(200px, 20vw, 360px);
 }
 
 .resume__scene-img--isu-cy {
-  top: -95px;
-  left: 2%;
-  width: clamp(90px, 8vw, 140px);
+  top: 2vh;
+  left: 50%;
+  width: clamp(120px, 11vw, 190px);
 }
 
 .resume__scene-img--isu-logo {
-  top: -12px;
-  left: 40%;
-  width: clamp(70px, 6vw, 110px);
+  bottom: -1vh;
+  left: -1vw;
+  width: clamp(120px, 11vw, 190px);
 }
 
 .resume__scene--isu.resume__scene--enter .resume__scene-img--isu-logo {
@@ -69,26 +106,27 @@
   animation: resumeIsuCampanileIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
 }
 
-/* Casey's — logo crosses high on the left, the phone screenshot rides
-   the line dead center, the storefront rises through it on the right. */
+/* Casey's — the storefront owns the bottom-right, the rooster logo
+   greets from the top-left, the app screenshot rides low on the right
+   like a dropped photo. */
 .resume__scene-img--caseys-logo {
-  top: -19px;
-  left: -1rem;
-  width: clamp(140px, 12vw, 220px);
+  top: max(4vh, 5.5rem);
+  left: 2vw;
+  width: clamp(150px, 14vw, 250px);
 }
 
 .resume__scene-img--caseys-app {
-  top: -84px;
-  left: 44%;
-  width: clamp(90px, 8vw, 140px);
-  --caseys-app-angle: -20deg;
+  bottom: 6vh;
+  right: 4vw;
+  width: clamp(110px, 10vw, 170px);
+  --caseys-app-angle: -14deg;
   transform-origin: center;
 }
 
 .resume__scene-img--caseys-store {
-  top: -20px;
-  right: -0.5rem;
-  width: clamp(220px, 20vw, 360px);
+  bottom: -2vh;
+  right: -1vw;
+  width: clamp(300px, 30vw, 560px);
 }
 
 .resume__scene--caseys.resume__scene--enter .resume__scene-img--caseys-logo {
@@ -103,18 +141,18 @@
   animation: resumeCaseysStoreIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
 }
 
-/* Dave — the bear stands astride the line; the app panel rides it
-   just to the right, tilted like a dropped photo. */
+/* Dave — the bear anchors the bottom-right, big and friendly; the app
+   panel floats top-right, tilted like a dropped photo. */
 .resume__scene-img--dave-bear {
-  top: -77px;
-  left: 4%;
-  width: clamp(110px, 10vw, 170px);
+  bottom: -1vh;
+  right: 2vw;
+  width: clamp(190px, 19vw, 340px);
 }
 
 .resume__scene-img--dave-app {
-  top: -47px;
-  right: -0.5rem;
-  width: clamp(160px, 15vw, 260px);
+  top: 5vh;
+  right: 3vw;
+  width: clamp(170px, 16vw, 280px);
   rotate: 4deg;
 }
 
@@ -126,27 +164,37 @@
   animation: resumeSceneRise 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
 }
 
-/* Single-logo companies — each logo is centered directly on the line. */
+/* Single-logo companies — one asset, so it gets to be confident: large,
+   vertically centered on the open right side of the page. Bottom-right
+   for Critical Tinkers instead, so the three don't all read identically. */
 .resume__scene-img--bayada-logo {
-  top: -23px;
-  left: 6%;
-  width: clamp(160px, 14vw, 240px);
+  top: 50%;
+  right: 5vw;
+  width: clamp(260px, 26vw, 440px);
+  transform: translateY(-50%);
 }
 
 .resume__scene-img--workiva-logo {
-  top: 1px;
-  right: 0;
-  width: clamp(180px, 16vw, 280px);
+  top: 50%;
+  right: 5vw;
+  width: clamp(280px, 28vw, 480px);
+  transform: translateY(-50%);
 }
 
 .resume__scene-img--ct-logo {
-  top: -19px;
-  left: 8%;
-  width: clamp(150px, 13vw, 220px);
+  bottom: 6vh;
+  right: 5vw;
+  width: clamp(220px, 22vw, 380px);
 }
 
-.resume__scene--bayada.resume__scene--enter .resume__scene-img--bayada-logo,
-.resume__scene--workiva.resume__scene--enter .resume__scene-img--workiva-logo,
+.resume__scene--bayada.resume__scene--enter .resume__scene-img--bayada-logo {
+  animation: resumeSceneRiseCentered 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+}
+
+.resume__scene--workiva.resume__scene--enter .resume__scene-img--workiva-logo {
+  animation: resumeSceneRiseCentered 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+}
+
 .resume__scene--ct.resume__scene--enter .resume__scene-img--ct-logo {
   animation: resumeSceneRise 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
 }
@@ -156,21 +204,32 @@
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+/* Same rise, but keeps the permanent translateY(-50%) centering intact
+   through the animation instead of being overwritten by it. */
+@keyframes resumeSceneRiseCentered {
+  from { opacity: 0; transform: translateY(-50%) translateY(20px) scale(0.94); }
+  to   { opacity: 1; transform: translateY(-50%) translateY(0) scale(1); }
+}
+
+/* In from the bottom-left at a fixed 60° tilt, and stays at that angle. */
 @keyframes resumeIsuLogoIn {
   from {
     opacity: 0;
-    transform: translate(-120%, 120%) rotate(30deg);
+    transform: translate(-140%, 140%) rotate(60deg);
   }
   to {
     opacity: 1;
-    transform: translate(0, 0) rotate(30deg);
+    transform: translate(0, 0) rotate(60deg);
   }
 }
 
+/* Drops straight down from off-screen top, centered, upside-down the
+   whole way — cy.png is him mid-stride, so inverted he reads as walking
+   along the top edge like it's the ceiling. */
 @keyframes resumeIsuCyIn {
   from {
     opacity: 0;
-    transform: translate(-50%, -180%) rotate(180deg);
+    transform: translate(-50%, -160%) rotate(180deg);
   }
   to {
     opacity: 1;
@@ -398,7 +457,7 @@
   display: flex;
   flex-direction: column;
   text-align: left;
-  color: var(--text-body);
+  color: var(--resume-ink);
   opacity: 1;
   user-select: none;
   -webkit-user-select: none;
@@ -411,7 +470,7 @@
   width: 100%;
   margin: 0;
   padding: 0 0 0 1.25rem;
-  color: var(--text-body);
+  color: var(--resume-ink);
   font-family: 'Fraunces', serif;
   font-size: 0.82rem;
   line-height: 1.5;
@@ -442,10 +501,15 @@
 
 .resume__timeline-date {
   font-size: 0.85rem;
-  color: var(--text-muted);
+  color: var(--resume-ink-muted);
   letter-spacing: 0.05em;
   font-family: 'Fraunces', serif;
   margin-top: 0.4rem;
+  transition: font-size 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.resume__timeline-item--selected .resume__timeline-date {
+  font-size: 1.05rem;
 }
 
 .resume__timeline-title {
@@ -458,12 +522,12 @@
 }
 
 .resume__timeline-item--selected .resume__timeline-title {
-  font-size: 1.65rem;
+  font-size: 2.1rem;
   font-weight: 700;
 }
 
 .resume__timeline-item--selected .resume__timeline-company {
-  font-size: 1.45rem;
+  font-size: 1.75rem;
 }
 
 .resume__timeline-company {

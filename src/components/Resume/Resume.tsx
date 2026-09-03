@@ -181,8 +181,62 @@ const Resume: React.FC = () => {
     };
   }, []);
 
+  const selectedItem = timelineData[selectedIndex];
+  const sceneCompany =
+    !selectedItem || isPlaceholderItem(selectedItem) ? null :
+    isIowaStateItem(selectedItem) ? 'isu' :
+    isCaseysItem(selectedItem) ? 'caseys' :
+    isDaveItem(selectedItem) ? 'dave' :
+    isBayadaItem(selectedItem) ? 'bayada' :
+    isWorkivaItem(selectedItem) ? 'workiva' :
+    isCriticalTinkersItem(selectedItem) ? 'ct' :
+    null;
+
   return (
     <div className="resume">
+      {/* Full-page ambient backdrop for whichever entry is selected — set the
+          scene, don't compete with the text. Anchored to .resume (not the
+          scrolling timeline) so it stays put as a backdrop while the
+          timeline slides underneath it, and images are kept to the page's
+          edges/corners, clear of the text column on the left. A soft scrim
+          (below) protects that column further regardless of viewport width. */}
+      {sceneCompany === 'isu' && (
+        <div key={`isu-scene-${selectedIndex}`} className="resume__scene resume__scene--isu resume__scene--enter" aria-hidden="true">
+          <img src="/images/isu/campanile.png" alt="" className="resume__scene-img resume__scene-img--isu-campanile" />
+          <img src="/images/isu/cy.png" alt="" className="resume__scene-img resume__scene-img--isu-cy" />
+          <img src="/images/isu/isulogo.png" alt="" className="resume__scene-img resume__scene-img--isu-logo" />
+        </div>
+      )}
+      {sceneCompany === 'caseys' && (
+        <div key={`caseys-scene-${selectedIndex}`} className="resume__scene resume__scene--caseys resume__scene--enter" aria-hidden="true">
+          <img src="/images/caseys/store.png" alt="" className="resume__scene-img resume__scene-img--caseys-store" />
+          <img src="/images/caseys/caseys.png" alt="" className="resume__scene-img resume__scene-img--caseys-logo" />
+          <img src="/images/caseys/app.png" alt="" className="resume__scene-img resume__scene-img--caseys-app" />
+        </div>
+      )}
+      {sceneCompany === 'dave' && (
+        <div key={`dave-scene-${selectedIndex}`} className="resume__scene resume__scene--dave resume__scene--enter" aria-hidden="true">
+          <img src="/images/dave/dave-bear.webp" alt="" className="resume__scene-img resume__scene-img--dave-bear" />
+          <img src="/images/dave/app.png" alt="" className="resume__scene-img resume__scene-img--dave-app" />
+        </div>
+      )}
+      {sceneCompany === 'bayada' && (
+        <div key={`bayada-scene-${selectedIndex}`} className="resume__scene resume__scene--bayada resume__scene--enter" aria-hidden="true">
+          <img src="/images/bayada/bayadalogo.png" alt="" className="resume__scene-img resume__scene-img--bayada-logo" />
+        </div>
+      )}
+      {sceneCompany === 'workiva' && (
+        <div key={`workiva-scene-${selectedIndex}`} className="resume__scene resume__scene--workiva resume__scene--enter" aria-hidden="true">
+          <img src="/images/workivalogo.png" alt="" className="resume__scene-img resume__scene-img--workiva-logo" />
+        </div>
+      )}
+      {sceneCompany === 'ct' && (
+        <div key={`ct-scene-${selectedIndex}`} className="resume__scene resume__scene--ct resume__scene--enter" aria-hidden="true">
+          <img src="/images/criticaltinkers/CT Logo Filled.svg" alt="" className="resume__scene-img resume__scene-img--ct-logo" />
+        </div>
+      )}
+      <div className="resume__text-scrim" aria-hidden="true" />
+
       <div className="resume__back-button">
         <AwesomeBtn
           color={colors.blue}
@@ -203,13 +257,6 @@ const Resume: React.FC = () => {
                 const descriptionPlacement = item.type === 'work' ? 'below' : 'above';
                 const showDescription = index === selectedIndex && item.description && item.description.length > 0;
                 const isPlaceholder = isPlaceholderItem(item);
-                const isSelected = index === selectedIndex;
-                const showIsuScene = isSelected && isIowaStateItem(item);
-                const showCaseysScene = isSelected && isCaseysItem(item);
-                const showDaveScene = isSelected && isDaveItem(item);
-                const showBayadaScene = isSelected && isBayadaItem(item);
-                const showWorkivaScene = isSelected && isWorkivaItem(item);
-                const showCriticalTinkersScene = isSelected && isCriticalTinkersItem(item);
 
                 return (
                   <article
@@ -246,46 +293,6 @@ const Resume: React.FC = () => {
                       </svg>
                     ) : (
                       <div className="resume__timeline-dot" aria-hidden />
-                    )}
-                    {/* Every scene below is anchored to this article (position:absolute
-                        inset:0), so each image's top/left values are authored directly
-                        against the timeline line at top:27px — the images can then
-                        reliably straddle the line instead of drifting off it whenever
-                        the page's vertical centering shifts with viewport height. */}
-                    {showIsuScene && (
-                      <div key={`isu-scene-${selectedIndex}`} className="resume__scene resume__scene--isu resume__scene--enter" aria-hidden="true">
-                        <img src="/images/isu/campanile.png" alt="" className="resume__scene-img resume__scene-img--isu-campanile" />
-                        <img src="/images/isu/cy.png" alt="" className="resume__scene-img resume__scene-img--isu-cy" />
-                        <img src="/images/isu/isulogo.png" alt="" className="resume__scene-img resume__scene-img--isu-logo" />
-                      </div>
-                    )}
-                    {showCaseysScene && (
-                      <div key={`caseys-scene-${selectedIndex}`} className="resume__scene resume__scene--caseys resume__scene--enter" aria-hidden="true">
-                        <img src="/images/caseys/caseys.png" alt="" className="resume__scene-img resume__scene-img--caseys-logo" />
-                        <img src="/images/caseys/app.png" alt="" className="resume__scene-img resume__scene-img--caseys-app" />
-                        <img src="/images/caseys/store.png" alt="" className="resume__scene-img resume__scene-img--caseys-store" />
-                      </div>
-                    )}
-                    {showDaveScene && (
-                      <div key={`dave-scene-${selectedIndex}`} className="resume__scene resume__scene--dave resume__scene--enter" aria-hidden="true">
-                        <img src="/images/dave/dave-bear.webp" alt="" className="resume__scene-img resume__scene-img--dave-bear" />
-                        <img src="/images/dave/app.png" alt="" className="resume__scene-img resume__scene-img--dave-app" />
-                      </div>
-                    )}
-                    {showBayadaScene && (
-                      <div key={`bayada-scene-${selectedIndex}`} className="resume__scene resume__scene--bayada resume__scene--enter" aria-hidden="true">
-                        <img src="/images/bayada/bayadalogo.png" alt="" className="resume__scene-img resume__scene-img--bayada-logo" />
-                      </div>
-                    )}
-                    {showWorkivaScene && (
-                      <div key={`workiva-scene-${selectedIndex}`} className="resume__scene resume__scene--workiva resume__scene--enter" aria-hidden="true">
-                        <img src="/images/workivalogo.png" alt="" className="resume__scene-img resume__scene-img--workiva-logo" />
-                      </div>
-                    )}
-                    {showCriticalTinkersScene && (
-                      <div key={`ct-scene-${selectedIndex}`} className="resume__scene resume__scene--ct resume__scene--enter" aria-hidden="true">
-                        <img src="/images/criticaltinkers/CT Logo Filled.svg" alt="" className="resume__scene-img resume__scene-img--ct-logo" />
-                      </div>
                     )}
                     <div className="resume__timeline-meta">
                       <span className="resume__timeline-company">{item.subtitle}</span>

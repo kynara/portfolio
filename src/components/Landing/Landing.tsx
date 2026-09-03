@@ -19,9 +19,9 @@ const ROUTE_COLORS: Record<string, string> = {
 };
 
 const ICONS: IconData[] = [
-  { id: 'writer', label: 'blog', path: '/blog', src: '/icons/writer.png' },
-  { id: 'resume', label: 'resume', path: '/resume', src: '/icons/resume.png' },
-  { id: 'phone', label: 'contact me', path: '/contact', src: '/icons/phone.png' },
+  { id: 'writer', label: 'blog', path: '/blog', src: '/icons/donut.png' },
+  { id: 'resume', label: 'resume', path: '/resume', src: '/icons/papers.webp' },
+  { id: 'phone', label: 'contact me', path: '/contact', src: '/icons/fax.png' },
 ];
 
 const Landing: React.FC = () => {
@@ -201,10 +201,8 @@ const Landing: React.FC = () => {
                 + text-anchor middle since only the top of the plate is visible. */}
             <path id="landing-plate-arc-mobile" d="M 24 210 A 186 186 0 0 1 396 210" />
           </defs>
-          {/* side="right" flips the glyphs onto the outward-facing side of the
-              arc — without it, text riding this curve renders upside-down. */}
           <text className="landing__plate-text-desktop">
-            <textPath href="#landing-plate-arc-desktop" startOffset="4%" {...{ side: 'right' }}>
+            <textPath href="#landing-plate-arc-desktop" startOffset="4%" {...{ side: 'left' }}>
               FEED ME TO NAVIGATE •
             </textPath>
           </text>
@@ -214,29 +212,36 @@ const Landing: React.FC = () => {
             </textPath>
           </text>
         </svg>
+      </div>
 
-        <div className="landing__plate-items">
-          {ICONS.map((icon, index) => {
-            const imgRef = iconRefs[index];
-            const variantClass = index === 0 ? 'landing__icon-wrapper--first'
-                              : index === 1 ? 'landing__icon-wrapper--middle'
-                              : 'landing__icon-wrapper--third';
+      {/* Sibling of .landing__plate, not a child: .landing__plate needs its own
+          transform (for the half-plate slide-in) which forces a stacking
+          context, trapping any z-index set on children inside it. Pulling the
+          icons out to the top level lets them stack independently — above the
+          face while idle/hover (dragging shows the icon in front of her),
+          below her once navigation starts — while the plate graphic itself
+          stays pinned as pure background (see .landing__plate's z-index). */}
+      <div className="landing__plate-items" aria-label="Navigation menu">
+        {ICONS.map((icon, index) => {
+          const imgRef = iconRefs[index];
+          const variantClass = index === 0 ? 'landing__icon-wrapper--first'
+                            : index === 1 ? 'landing__icon-wrapper--middle'
+                            : 'landing__icon-wrapper--third';
 
-            return (
-              <div key={icon.id} className={`landing__icon-wrapper ${variantClass}`}>
-                <img
-                  ref={imgRef}
-                  src={icon.src}
-                  alt={icon.label}
-                  className="landing__icon-img"
-                  onPointerDown={(e) => startDrag(e, icon, imgRef)}
-                  draggable={false}
-                />
-                <span className="landing__icon-label">{icon.label}</span>
-              </div>
-            );
-          })}
-        </div>
+          return (
+            <div key={icon.id} className={`landing__icon-wrapper ${variantClass}`}>
+              <img
+                ref={imgRef}
+                src={icon.src}
+                alt={icon.label}
+                className={`landing__icon-img landing__icon-img--${icon.id}`}
+                onPointerDown={(e) => startDrag(e, icon, imgRef)}
+                draggable={false}
+              />
+              <span className="landing__icon-label">{icon.label}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
