@@ -104,6 +104,15 @@ const Resume: React.FC = () => {
     // once the wheel goes quiet.
     const onWheel = (event: WheelEvent) => {
       if (isDragging) return;
+
+      // Let a long description scroll natively within its own box instead of
+      // hijacking the gesture for horizontal timeline movement — otherwise
+      // there'd be no way to read past what fits in the viewport.
+      const description = (event.target as HTMLElement | null)?.closest('.resume__timeline-description');
+      if (description instanceof HTMLElement && description.scrollHeight > description.clientHeight) {
+        return;
+      }
+
       event.preventDefault();
       node.scrollLeft += event.deltaY + event.deltaX;
       clearTimeout(wheelSettleTimeout);
@@ -257,7 +266,6 @@ const Resume: React.FC = () => {
           <div className="resume__timeline" ref={timelineRef}>
             <div className="resume__timeline-track">
               {timelineData.map((item, index) => {
-                const descriptionPlacement = item.type === 'work' ? 'below' : 'above';
                 const showDescription = index === selectedIndex && item.description && item.description.length > 0;
                 const isPlaceholder = isPlaceholderItem(item);
 
@@ -303,7 +311,7 @@ const Resume: React.FC = () => {
                       <span className="resume__timeline-date">{item.date}</span>
                     </div>
                     {showDescription && (
-                      <ul className={`resume__timeline-description resume__timeline-description--${descriptionPlacement}`}>
+                      <ul className="resume__timeline-description">
                         {item.description!.map((entry, descriptionIndex) => (
                           <li key={`${item.title}-${descriptionIndex}`}>{entry}</li>
                         ))}

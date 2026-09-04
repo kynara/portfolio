@@ -2,7 +2,10 @@
 
 /* ── Page shell ───────────────────────────────────────── */
 .resume {
-  --timeline-gap: clamp(20rem, 40vw, 100rem);
+  /* Small enough that the neighboring items peek in at the edges of the
+     viewport when one is centered — that visible "there's more" sliver is
+     the scroll affordance, instead of a dedicated arrow/dot indicator. */
+  --timeline-gap: clamp(3rem, 8vw, 6rem);
   --timeline-item-width: clamp(300px, 50vw, 420px);
   /* --text-body/--text-muted (tokens.css) were built for the dark navy
      background this page used previously (--bg-navy) — against the pale
@@ -351,8 +354,9 @@
      scrollLeft write — including the ones the drag and wheel handlers make
      continuously — so dragging or wheel-scrolling fought itself instead of
      tracking the pointer/gesture smoothly. */
-  /* (50vw) - (Item 300px) - (Half Gap) = centered between item 1 and 2 */
-  scroll-padding-left: max(1rem, calc(50vw - var(--timeline-item-width) - (var(--timeline-gap) / 2)));
+  /* Half the viewport minus half the item's own width = the item is
+     centered in the viewport once scrolled to this offset. */
+  scroll-padding-left: max(1rem, calc(50vw - (var(--timeline-item-width) / 2)));
 }
 .resume__timeline:active { cursor: grabbing; }
 .resume__timeline::-webkit-scrollbar { display: none; }
@@ -363,7 +367,7 @@
   display: flex;
   gap: var(--gap);
   /* Match scroll-padding-left for start, symmetrical for end */
-  padding: 0 max(1rem, calc(50vw - var(--timeline-item-width) - (var(--timeline-gap) / 2)));
+  padding: 0 max(1rem, calc(50vw - (var(--timeline-item-width) / 2)));
   align-items: flex-start;
   width: max-content;
 }
@@ -392,14 +396,6 @@
 .resume__timeline-item--work      { --accent: var(--blue); }
 .resume__timeline-item--education { --accent: var(--red); }
 .resume__timeline-item--award     { --accent: var(--yellow); }
-
-/* Layout: Work goes ABOVE the line; education/awards stay BELOW */
-.resume__timeline-item--work .resume__timeline-meta {
-  position: absolute;
-  bottom: 8.5rem;
-  left: 0;
-  width: 100%;
-}
 
 /* ── Dots & Lines ────────────────────────────────────── */
 
@@ -451,8 +447,14 @@
   transform: scale(1.5);
 }
 
+/* Title/company/date always sit above the line, description always below —
+   one consistent top-to-bottom reading order for every entry type, rather
+   than flipping per type. */
 .resume__timeline-meta {
-  position: relative;
+  position: absolute;
+  bottom: 8.5rem;
+  left: 0;
+  width: 100%;
   z-index: 2;
   display: flex;
   flex-direction: column;
@@ -466,33 +468,36 @@
 
 .resume__timeline-description {
   position: absolute;
+  top: 2.6rem;
   left: 0;
   width: 100%;
   margin: 0;
-  padding: 0 0 0 1.25rem;
+  padding: 0 0.75rem 0 1.25rem;
   color: var(--resume-ink);
   font-family: 'Fraunces', serif;
   font-size: 0.82rem;
   line-height: 1.5;
   list-style: disc;
   z-index: 2;
+  /* Capped and independently scrollable so a long entry (e.g. eight bullets)
+     can never run past the bottom of the viewport with no way to reach the
+     rest of it — see the wheel handler in Resume.tsx, which lets a wheel
+     gesture scroll this box natively instead of hijacking it for the
+     horizontal timeline. */
+  max-height: clamp(9rem, 24vh, 19rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--resume-ink-muted) transparent;
 }
 
-.resume__timeline-description--below {
-  top: calc(100% + 0.1rem);
+.resume__timeline-description::-webkit-scrollbar {
+  width: 6px;
 }
 
-.resume__timeline-description--above {
-  bottom: calc(100% + 0.2rem);
-}
-
-.resume__timeline-item--work .resume__timeline-description--below {
-  top: 2.6rem;
-}
-
-.resume__timeline-item--education .resume__timeline-description--above,
-.resume__timeline-item--award .resume__timeline-description--above {
-  bottom: calc(100% + 0.2rem);
+.resume__timeline-description::-webkit-scrollbar-thumb {
+  background: var(--resume-ink-muted);
+  border-radius: 3px;
 }
 
 .resume__timeline-item--selected .resume__timeline-star {
