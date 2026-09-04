@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AwesomeBtn from '../AwesomeBtn/AwesomeBtn';
 import { timelineData } from './Resume.data';
@@ -27,7 +27,10 @@ const Resume: React.FC = () => {
     (lastIndex, item, index) => (isPlaceholderItem(item) ? lastIndex : index),
     0,
   );
-  const clampSelectableIndex = (index: number) => Math.max(0, Math.min(lastSelectableIndex, index));
+  const clampSelectableIndex = useCallback(
+    (index: number) => Math.max(0, Math.min(lastSelectableIndex, index)),
+    [lastSelectableIndex],
+  );
 
   const selectItem = (index: number) => {
     const targetIndex = clampSelectableIndex(index);
@@ -179,7 +182,7 @@ const Resume: React.FC = () => {
       clearTimeout(wheelSettleTimeout);
       if (scrollRaf) window.cancelAnimationFrame(scrollRaf);
     };
-  }, []);
+  }, [clampSelectableIndex]);
 
   const selectedItem = timelineData[selectedIndex];
   const sceneCompany =

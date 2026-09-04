@@ -141,7 +141,6 @@ const Landing: React.FC = () => {
       className={`landing landing--${phase}`}
       style={{ ['--circle-color' as any]: circleColor }}
     >
-      {/* Background Text */}
       <div className="landing__bg-text" aria-hidden="true">
         <span className="landing__bg-text-line1">YOU ARE</span>
         <span className="landing__bg-text-line2">WHAT</span>
@@ -174,19 +173,7 @@ const Landing: React.FC = () => {
 
       {dragGuidePath && (
         <svg className="landing__drag-guide" aria-hidden="true">
-          <defs>
-            {/*<marker*/}
-            {/*  id="landing-drag-arrowhead"*/}
-            {/*  markerWidth="8"*/}
-            {/*  markerHeight="8"*/}
-            {/*  refX="7"*/}
-            {/*  refY="3.5"*/}
-            {/*  orient="auto"*/}
-            {/*>*/}
-            {/*  <path d="M0,0 L8,3.5 L0,7 z" fill="var(--yellow)" />*/}
-            {/*</marker>*/}
-          </defs>
-          <path d={dragGuidePath} className="landing__drag-guide-path" markerEnd="url(#landing-drag-arrowhead)" />
+          <path d={dragGuidePath} className="landing__drag-guide-path" />
         </svg>
       )}
 
