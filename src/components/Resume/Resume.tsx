@@ -101,18 +101,12 @@ const Resume: React.FC = () => {
     // went dead for the rest of the gesture, with nothing else visibly changing).
     // Now the raw delta is translated continuously — the user stays in control
     // of position for the whole gesture — and it settles on the nearest item
-    // once the wheel goes quiet.
+    // once the wheel goes quiet. Bound to the whole page (dragSurface), not just
+    // the timeline strip, so scrolling anywhere — including over the description
+    // below it — moves through the entries; this page has no conventional
+    // vertical scroll of its own for wheel input to fall back to.
     const onWheel = (event: WheelEvent) => {
       if (isDragging) return;
-
-      // Let a long description scroll natively within its own box instead of
-      // hijacking the gesture for horizontal timeline movement — otherwise
-      // there'd be no way to read past what fits in the viewport.
-      const description = (event.target as HTMLElement | null)?.closest('.resume__timeline-description');
-      if (description instanceof HTMLElement && description.scrollHeight > description.clientHeight) {
-        return;
-      }
-
       event.preventDefault();
       node.scrollLeft += event.deltaY + event.deltaX;
       clearTimeout(wheelSettleTimeout);
@@ -174,7 +168,7 @@ const Resume: React.FC = () => {
       }, 0);
     };
 
-    node.addEventListener('wheel', onWheel, { passive: false });
+    dragSurface.addEventListener('wheel', onWheel, { passive: false });
     node.addEventListener('scroll', onScroll, { passive: true });
     dragSurface.addEventListener('pointerdown', onPointerDown);
     dragSurface.addEventListener('pointermove', onPointerMove);
@@ -182,7 +176,7 @@ const Resume: React.FC = () => {
     dragSurface.addEventListener('pointerleave', onPointerUp);
 
     return () => {
-      node.removeEventListener('wheel', onWheel);
+      dragSurface.removeEventListener('wheel', onWheel);
       node.removeEventListener('scroll', onScroll);
       dragSurface.removeEventListener('pointerdown', onPointerDown);
       dragSurface.removeEventListener('pointermove', onPointerMove);
@@ -266,7 +260,6 @@ const Resume: React.FC = () => {
           <div className="resume__timeline" ref={timelineRef}>
             <div className="resume__timeline-track">
               {timelineData.map((item, index) => {
-                const showDescription = index === selectedIndex && item.description && item.description.length > 0;
                 const isPlaceholder = isPlaceholderItem(item);
 
                 return (
@@ -310,10 +303,10 @@ const Resume: React.FC = () => {
                       <span className="resume__timeline-title">{item.title}</span>
                       <span className="resume__timeline-date">{item.date}</span>
                     </div>
-                    {showDescription && (
+                    {index === selectedIndex && item.description && item.description.length > 0 && (
                       <ul className="resume__timeline-description">
-                        {item.description!.map((entry, descriptionIndex) => (
-                          <li key={`${item.title}-${descriptionIndex}`}>{entry}</li>
+                        {item.description.map((entry, descriptionIndex) => (
+                          <li key={descriptionIndex}>{entry}</li>
                         ))}
                       </ul>
                     )}

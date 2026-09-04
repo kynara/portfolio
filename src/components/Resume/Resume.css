@@ -20,11 +20,23 @@
   background: var(--yellow-bg);
   color: var(--resume-ink);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  padding: 0;
+  /* Clears .resume__back-button (top:1.5rem, ~44px tall) — the tallest
+     selected label (a wrapped two-line title on a narrow viewport) can sit
+     close enough to the top of .resume__timeline to reach this high. */
+  padding: 6.5rem 0 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* Not centered: the timeline must stay put regardless of how tall the
+     selected entry's description is, so the block is pinned from the top
+     instead of centering as a unit (which would shift the timeline itself
+     up/down every time a shorter or longer entry gets selected). */
+  justify-content: flex-start;
   cursor: grab;
+  /* The whole page is a drag surface — selecting text while dragging to
+     scroll is just friction, not a feature worth keeping. */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
 }
 
 /* ── Company scenes ───────────────────────────────────────
@@ -303,7 +315,7 @@
   max-width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 0.5rem;
 }
 
 /* ── Shared section animation ─────────────────────────── */
@@ -316,6 +328,29 @@
 @keyframes resumeFadeUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Selected entry's description ─────────────────────── */
+/* Lives inside the item itself (not a separate panel) so it scrolls with
+   the item as part of the same horizontally-moving row, instead of sitting
+   in one fixed spot while the timeline moves underneath it. */
+.resume__timeline-description {
+  position: absolute;
+  top: 2.6rem;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 0 1.1rem;
+  color: var(--resume-ink);
+  font-family: 'Fraunces', serif;
+  font-size: 0.76rem;
+  line-height: 1.4;
+  list-style: disc;
+  z-index: 2;
+}
+
+.resume__timeline-description li + li {
+  margin-top: 0.35rem;
 }
 
 /* ── Section title ────────────────────────────────────── */
@@ -343,8 +378,12 @@
 .resume__timeline {
   overflow-x: auto;
   overflow-y: visible;
-  min-height: 40rem;
-  padding: 15rem 0 5rem; /* More top padding for labels above timeline */
+  min-height: 9rem;
+  /* Bottom padding is fixed (not content-driven) and sized for the longest
+     description among all entries, so every entry reserves the same room
+     whether it needs it or not — see the note on .resume__timeline-item
+     for why this has to be a fixed floor rather than shrinking to fit. */
+  padding: 11rem 0 24rem; /* Top padding clears the label sitting above the line */
   scrollbar-width: none;
   -ms-overflow-style: none;
   width: 100%;
@@ -381,8 +420,8 @@
   position: relative;
   flex: 0 0 auto;
   width: var(--timeline-item-width);
-  padding-top: 4rem;
-  padding-bottom: 4rem;
+  padding-top: 2.5rem;
+  padding-bottom: 1rem;
   cursor: pointer;
 }
 
@@ -447,12 +486,12 @@
   transform: scale(1.5);
 }
 
-/* Title/company/date always sit above the line, description always below —
-   one consistent top-to-bottom reading order for every entry type, rather
-   than flipping per type. */
+/* Title/company/date always sit above the line — the description (rendered
+   separately below the whole timeline, not per-item; see Resume.tsx) always
+   reads after it, so every entry has the same top-to-bottom order. */
 .resume__timeline-meta {
   position: absolute;
-  bottom: 8.5rem;
+  bottom: 5.5rem;
   left: 0;
   width: 100%;
   z-index: 2;
@@ -461,43 +500,6 @@
   text-align: left;
   color: var(--resume-ink);
   opacity: 1;
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-}
-
-.resume__timeline-description {
-  position: absolute;
-  top: 2.6rem;
-  left: 0;
-  width: 100%;
-  margin: 0;
-  padding: 0 0.75rem 0 1.25rem;
-  color: var(--resume-ink);
-  font-family: 'Fraunces', serif;
-  font-size: 0.82rem;
-  line-height: 1.5;
-  list-style: disc;
-  z-index: 2;
-  /* Capped and independently scrollable so a long entry (e.g. eight bullets)
-     can never run past the bottom of the viewport with no way to reach the
-     rest of it — see the wheel handler in Resume.tsx, which lets a wheel
-     gesture scroll this box natively instead of hijacking it for the
-     horizontal timeline. */
-  max-height: clamp(9rem, 24vh, 19rem);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: var(--resume-ink-muted) transparent;
-}
-
-.resume__timeline-description::-webkit-scrollbar {
-  width: 6px;
-}
-
-.resume__timeline-description::-webkit-scrollbar-thumb {
-  background: var(--resume-ink-muted);
-  border-radius: 3px;
 }
 
 .resume__timeline-item--selected .resume__timeline-star {
@@ -514,30 +516,30 @@
 }
 
 .resume__timeline-item--selected .resume__timeline-date {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
 }
 
 .resume__timeline-title {
   font-family: 'Fraunces', serif;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 500;
   color: var(--blue-dark);
-  line-height: 1.1;
+  line-height: 1.15;
   transition: font-size 0.3s cubic-bezier(0.22, 1, 0.36, 1), font-weight 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .resume__timeline-item--selected .resume__timeline-title {
-  font-size: 2.1rem;
+  font-size: 1.7rem;
   font-weight: 700;
 }
 
 .resume__timeline-item--selected .resume__timeline-company {
-  font-size: 1.75rem;
+  font-size: 1.4rem;
 }
 
 .resume__timeline-company {
   font-family: 'Bayon', sans-serif;
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   color: var(--accent, var(--blue)); /* Color the subtitle with accent */
   letter-spacing: 0.02em;
   transition: font-size 0.3s cubic-bezier(0.22, 1, 0.36, 1);
