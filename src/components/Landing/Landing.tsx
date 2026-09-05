@@ -141,26 +141,24 @@ const Landing: React.FC = () => {
       className={`landing landing--${phase}`}
       style={{ ['--circle-color' as any]: circleColor }}
     >
-      <div className="landing__bg-text" aria-hidden="true">
-        <span className="landing__bg-text-line1">YOU ARE</span>
-        <span className="landing__bg-text-line2">WHAT</span>
-        <span className="landing__bg-text-line3">YOU EAT</span>
-      </div>
-
       <div className="landing__circle" />
 
       <div className="landing__face-wrap">
+        {/* Sibling of .landing__face, not a child: .landing__face is what
+            gets the shrink/scale animation on a successful drop, and this
+            text needs to stay put through that, not scale and warp along
+            with it. */}
+        <svg className="landing__head-arc-text" viewBox="0 -70 400 260" aria-hidden="true">
+          <defs>
+            <path id="landing-head-arc" d="M 40 170 A 160 160 0 0 1 360 170" />
+          </defs>
+          <text textAnchor="middle">
+            <textPath href="#landing-head-arc" startOffset="50%">
+              YOU ARE WHAT YOU EAT
+            </textPath>
+          </text>
+        </svg>
         <div className={`landing__face ${phase === 'clicked' ? 'landing__face--shrink' : ''}`}>
-          <svg className="landing__head-arc-text" viewBox="0 -70 400 260" aria-hidden="true">
-            <defs>
-              <path id="landing-head-arc" d="M 40 170 A 160 160 0 0 1 360 170" />
-            </defs>
-            <text textAnchor="middle">
-              <textPath href="#landing-head-arc" startOffset="50%">
-                YOU ARE WHAT YOU EAT
-              </textPath>
-            </text>
-          </svg>
           <img
             src={imgSrc}
             alt=""
@@ -178,7 +176,7 @@ const Landing: React.FC = () => {
       )}
 
       <div className="landing__plate" aria-label="Navigation menu">
-        <img src="/images/white-plate.png" alt="" className="landing__plate-bg" />
+        <img src="/images/white-plate.png" alt="" className="landing__plate-bg" draggable={false} />
         <svg className="landing__plate-text" viewBox="0 0 420 420" aria-hidden="true">
           <defs>
             <path id="landing-plate-arc-desktop" d="M 210 24 A 186 186 0 0 0 210 396" />

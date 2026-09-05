@@ -12,120 +12,102 @@
   background-color: var(--blue);
   position: relative;
   overflow: hidden;
-}
-
-/* ── Background Text ──────────────────────────────────── */
-.landing__bg-text {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  padding-left: 2vw;
-  z-index: 0;
-  pointer-events: none;
-  font-family: 'Bayon', sans-serif;
-  color: rgba(255, 228, 92, 0.9);
-  line-height: 0.7;
-  text-transform: uppercase;
+  /* Nothing here is meant to be selected or dragged as native content —
+     icons and the face image are dragged via custom pointer handling
+     instead, and highlighting text while dragging across the page is
+     just friction. */
   user-select: none;
-  height: 100vh;
-  overflow: hidden;
-  transform: translateX(0.5rem);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -webkit-touch-callout: none;
 }
 
-/* Sized off the smaller of viewport height/width so the heading can't
-   balloon on tall-but-narrow viewports (portrait tablets, unmaximized
-   windows) the way a pure vh clamp would. */
-.landing__bg-text-line1 {
-  font-size: clamp(7.9rem, min(26.5vh, 17vw), 26.5rem);
-  letter-spacing: -0.12em;
-  white-space: nowrap;
-  opacity: 0.9;
-}
-
-.landing__bg-text-line2 {
-  font-size: clamp(13.3rem, min(46vh, 30vw), 41rem);
-  letter-spacing: -0.1em;
-  white-space: nowrap;
-  margin-left: 0.07em;
-  opacity: 0.9;
-}
-
-.landing__bg-text-line3 {
-  font-size: clamp(8.3rem, min(26.5vh, 17vw), 26.5rem);
-  letter-spacing: -0.11em;
-  white-space: nowrap;
-  opacity: 0.9;
-}
-
+/* ── Heading ──────────────────────────────────────────── */
+/* Centered composition at every width — the curved "YOU ARE WHAT YOU EAT"
+   arcs over the head the same way on a wide screen as it does on a phone,
+   instead of swapping to a big stacked heading off to one side. */
 .landing__face-wrap {
   position: relative;
-  z-index: 20;
+  /* No z-index here on purpose — that would make this a stacking context,
+     trapping .landing__face and .landing__head-arc-text's z-indexes inside
+     it and forcing them to rise or fall together against .landing__circle.
+     They need to split: the face stays above the circle (z-index lives on
+     .landing__face itself instead, below), the arc text stays below it, so
+     the circle covers the heading but not her. */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* Nudged off-center so it clears the big "WHAT" behind it; reset on
-     mobile, where the bg text is hidden in favor of the head-arc text. */
-  transform: translateX(7vw);
+  /* Nudges the whole face+arc-text unit up to balance the room the arc
+     needs above the head. Belongs here, not on .landing__face itself: a
+     negative margin on a flex item pokes outside the space the container
+     hugs around it, so if it lived on .landing__face, this wrap's own
+     auto-height would come up short of the face's actual height — and the
+     arc text's `top: -30%` (measured against this wrap) would then sit
+     using the wrong, smaller reference height and land too low. */
+  margin-top: -8vh;
 }
 
-/* Curved "YOU ARE WHAT YOU EAT" that arcs over the head on small screens —
-   hidden on bigger screens, where the stacked .landing__bg-text is used instead. */
 .landing__head-arc-text {
-  display: none;
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: -30%;
+  width: 120%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 1;
+  /* SVG elements clip their own content by default — safety net on top of
+     the width itself, in case that's ever tight for the current viewport
+     (see the min-width:769px override below, which widens it further). */
+  overflow: visible;
+}
+
+/* Bigger screens: bigger arc, to match the bigger .landing__face — widening
+   this box scales the whole SVG's render, path and text together, so the
+   text-length-to-path-length ratio (see the font-size comment above) never
+   changes; this is the only lever that should be used to make the arc
+   render bigger, not font-size. Must come after the base rule above — same
+   reasoning as elsewhere in this file: a media query alone doesn't out-rank
+   it on specificity, only source order does. */
+@media (min-width: 769px) {
+  .landing__head-arc-text {
+    width: 150%;
+  }
 }
 
 .landing__head-arc-text text {
   font-family: 'Bayon', sans-serif;
   letter-spacing: -0.02em;
   fill: rgba(255, 228, 92, 0.9);
+  /* Fixed, not vh-scaled: the arc path (#landing-head-arc) is a fixed
+     length (~503 viewBox units) and "YOU ARE WHAT YOU EAT" at this
+     font-size needs ~477 of them — a viewBox-unit font-size (which is
+     what SVG font-size means, regardless of the element's rendered size
+     on screen) any bigger starts running past both ends of the path,
+     since startOffset:50% centers the text and lets the overflow spill
+     off symmetrically. This has nothing to do with viewport size — making
+     the arc visually bigger on bigger screens is .landing__head-arc-text's
+     `width` below, which scales the path and the text together and so
+     never changes this ratio. Confirmed against the live geometry with
+     text.getComputedTextLength() vs path.getTotalLength(), not guessed. */
+  font-size: 62px;
 }
 
-/* Mobile: hide the desktop stacked heading, use the curved head-arc text instead */
-@media (max-width: 768px) {
-  .landing__bg-text {
-    display: none;
-  }
-
-  .landing__head-arc-text {
-    display: block;
-    position: absolute;
-    left: 50%;
-    top: -30%;
-    width: 120%;
-    transform: translateX(-50%);
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .landing__head-arc-text text {
-    font-size: 62px;
-  }
-
-  .landing__face-wrap {
-    transform: none;
-  }
-
-  .landing__face {
-    height: clamp(340px, 85vw, 560px);
-    margin-top: -14vh;
-  }
-}
-
-/* Extra small phones */
+/* Extra small phones: also narrows the box a bit — at 120% width the fully
+   rendered arc runs a few pixels past both edges of a ~375px viewport
+   (unrelated to the text/path fit above, which is comfortable here; this
+   is the rendered SVG's pixel size against the viewport, not the text
+   against the path). Must come after the base .landing__head-arc-text
+   rule for the width override — media query vs. source order, as noted
+   elsewhere in this file. */
 @media (max-width: 390px) {
+  .landing__head-arc-text {
+    width: 110%;
+  }
+
   .landing__head-arc-text text {
     font-size: 56px;
-  }
-
-  .landing__face {
-    height: clamp(300px, 85vw, 460px);
-    margin-top: -11vh;
   }
 }
 
@@ -133,15 +115,17 @@
 
 .landing__plate {
   position: absolute;
-  right: 0;
-  top: 50%;
-  /* Capped by width as well as height so it can't balloon on tall-but-narrow
-     viewports (portrait tablets) the way a pure vh clamp would. */
-  width: clamp(420px, min(92vh, 65vw), 1000px);
-  height: clamp(420px, min(92vh, 65vw), 1000px);
-  /* Shift right by half the plate's own width so only its left half
-     renders inside the page's clipped bounds — a half-plate sliding in. */
-  transform: translate(50%, -50%);
+  left: 50%;
+  top: auto;
+  bottom: 0;
+  /* Shift down so only the top ~32% of the plate renders above the page's
+     clipped bottom edge — a bigger plate, mostly off-screen, centered at
+     every width instead of sliding in from the right on wide screens.
+     Capped by height as well as width so short/landscape viewports don't
+     get a plate that swallows the whole viewport. */
+  transform: translate(-50%, 68%);
+  width: clamp(510px, min(162vw, 90vh), 1050px);
+  height: clamp(510px, min(162vw, 90vh), 1050px);
   /* The plate graphic is pure background — never above anything but the
      flat page background, in every phase. The interactive icons are a
      separate element (.landing__plate-items, below) so they can stack
@@ -168,13 +152,13 @@
   width: 100%;
   height: 100%;
   font-family: 'Bayon', sans-serif;
-  font-size: 20px;
+  font-size: 17px;
   letter-spacing: 0.1em;
   fill: rgba(32, 6, 198, 0.75);
   text-transform: uppercase;
 }
 
-.landing__plate-text-mobile {
+.landing__plate-text-desktop {
   display: none;
 }
 
@@ -183,13 +167,14 @@
      icons (positioned by percentage within this box) line up with the
      plate graphic underneath despite being a separate element. */
   position: absolute;
-  right: 0;
-  top: 50%;
-  width: clamp(420px, min(92vh, 65vw), 1000px);
-  height: clamp(420px, min(92vh, 65vw), 1000px);
-  transform: translate(50%, -50%);
-  /* Above the face (z-index:20 on .landing__face-wrap) while idle/hover,
-     so dragging an icon toward the mouth shows it passing in front of her.
+  left: 50%;
+  top: auto;
+  bottom: 0;
+  width: clamp(510px, min(162vw, 90vh), 1050px);
+  height: clamp(510px, min(162vw, 90vh), 1050px);
+  transform: translate(-50%, 68%);
+  /* Above the face (z-index:20 on .landing__face) while idle/hover, so
+     dragging an icon toward the mouth shows it passing in front of her.
      Dropped below her once navigation starts (.landing--clicked, below)
      so the expanding circle can cover the plate cleanly along with her. */
   z-index: 25;
@@ -213,26 +198,28 @@
   transform: translate(-50%, -50%);
 }
 
-/* Arranged along the plate's visible rim: first/third bracket the top and
-   bottom, middle sits further left so the row bows with the plate's curve. */
+/* Rim runs left-to-right along the plate's flat top edge, with the middle
+   icon bowing upward — pulled into the plate's "palm", below the rim text
+   riding the outer edge above them. Only a shallow cap of the (bigger)
+   plate is ever on-screen, so the row sits close to its pole. */
 .landing__icon-wrapper--first {
-  left: 37%;
-  top: 30%;
+  left: 33%;
+  top: 23%;
 }
 
 .landing__icon-wrapper--middle {
-  left: 24%;
-  top: 50%;
+  left: 50%;
+  top: 17%;
 }
 
 .landing__icon-wrapper--third {
-  left: 37%;
-  top: 70%;
+  left: 67%;
+  top: 23%;
 }
 
 .landing__icon-img {
-  width: 132px;
-  height: 132px;
+  width: 104px;
+  height: 104px;
   cursor: grab;
   pointer-events: auto;
   filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
@@ -240,11 +227,11 @@
   touch-action: none;
 }
 
-/* Donut and fax sit 25% smaller than the papers icon (the reference size). */
+/* Donut and fax sit smaller than the papers icon (the reference size). */
 .landing__icon-img--writer,
 .landing__icon-img--phone {
-  width: 99px;
-  height: 99px;
+  width: 78px;
+  height: 78px;
 }
 
 .landing__icon-img:active {
@@ -254,12 +241,11 @@
 .landing__icon-label {
   font-family: 'Bayon', sans-serif;
   color: var(--blue-dark);
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   letter-spacing: 0.03em;
   text-transform: uppercase;
   text-align: center;
   line-height: 1;
-  user-select: none;
   white-space: nowrap;
 }
 
@@ -290,82 +276,6 @@
   }
 }
 
-@media (max-width: 768px) {
-  .landing__plate {
-    right: auto;
-    left: 50%;
-    top: auto;
-    bottom: 0;
-    /* Shift down so only the top ~32% of the plate renders above the
-       page's clipped bottom edge — a bigger plate, mostly off-screen.
-       Capped by height as well as width so short/landscape phones don't
-       get a plate that swallows the whole viewport. */
-    transform: translate(-50%, 68%);
-    width: clamp(510px, min(162vw, 90vh), 1050px);
-    height: clamp(510px, min(162vw, 90vh), 1050px);
-  }
-
-  /* Mirrors .landing__plate above so the icons stay aligned to it. */
-  .landing__plate-items {
-    right: auto;
-    left: 50%;
-    top: auto;
-    bottom: 0;
-    transform: translate(-50%, 68%);
-    width: clamp(510px, min(162vw, 90vh), 1050px);
-    height: clamp(510px, min(162vw, 90vh), 1050px);
-  }
-
-  .landing__icon-img {
-    width: 104px;
-    height: 104px;
-  }
-
-  .landing__icon-img--writer,
-  .landing__icon-img--phone {
-    width: 78px;
-    height: 78px;
-  }
-
-  .landing__icon-label {
-    font-size: 0.65rem;
-  }
-
-  .landing__plate-text {
-    font-size: 17px;
-    letter-spacing: 0.1em;
-  }
-
-  .landing__plate-text-desktop {
-    display: none;
-  }
-
-  .landing__plate-text-mobile {
-    display: inline;
-  }
-
-  /* Icon arc rotates 90°: rim now runs left-to-right along the top,
-     with the middle icon bowing upward instead of leftward. Only a shallow
-     cap of the (bigger) plate is on-screen, so the row sits close to the
-     plate's pole, above the instruction text riding the visible edge below it. */
-  /* Pulled into the plate's flat "palm", below the rim text riding the
-     plate's outer edge above them. */
-  .landing__icon-wrapper--first {
-    left: 33%;
-    top: 23%;
-  }
-
-  .landing__icon-wrapper--middle {
-    left: 50%;
-    top: 17%;
-  }
-
-  .landing__icon-wrapper--third {
-    left: 67%;
-    top: 23%;
-  }
-}
-
 /* ── Growing circle ───────────────────────────────────── */
 .landing__circle {
   position: absolute;
@@ -376,9 +286,11 @@
   border-radius: 50%;
   background-color: var(--circle-color);
   transform: translate(-50%, -50%) scale(0);
-  /* Above the plate/drag-guide/background but behind the face (z-index:20
-     on .landing__face-wrap), so it expands out from under her rather than
-     covering her up. */
+  /* Above the plate/drag-guide/background/arc text but behind the face
+     itself (z-index:20 on .landing__face — a sibling of the arc text, not
+     an ancestor, so the two can be on opposite sides of this), so it
+     expands out from under her rather than covering her up, while
+     covering the "YOU ARE WHAT YOU EAT" heading as it grows. */
   z-index: 15;
   pointer-events: none;
 }
@@ -401,8 +313,18 @@
 /* ── Face wrapper ─────────────────────────────────────── */
 .landing__face {
   position: relative;
-  z-index: 2;
-  height: clamp(350px, 38vw, 700px);
+  /* Above .landing__circle (z-index:15) — moved here from
+     .landing__face-wrap so only the face itself (not the sibling arc
+     text) rises above the circle. See the comment there. */
+  z-index: 20;
+  height: clamp(340px, 44vh, 620px);
+  /* Fixed instead of width:auto — the three face images (idle/hover/eaten)
+     aren't quite the same aspect ratio, so a width driven by the currently
+     loaded image would resize this box (and with it .landing__face-wrap,
+     and the arc text sized off that) on every phase change. Locked to the
+     idle image's own ratio; .landing__face-img below fits inside via
+     object-fit instead of dictating the box size. */
+  aspect-ratio: 0.914;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -410,13 +332,49 @@
   cursor: default;
 }
 
+/* Bigger screens: bigger head, nudged up further (more negative margin,
+   on .landing__face-wrap — see the comment there) so the extra height
+   doesn't run into the plate parked at the bottom. Must come after the
+   base .landing__face rule above for the height override — same reasoning
+   as the small-phone override below, just the other direction. */
+@media (min-width: 769px) {
+  .landing__face {
+    /* min(vh, vw): pure vh assumes width scales with height, which only
+       holds for ordinary landscape windows — on a narrow-but-tall one
+       (unmaximized or portrait) it let this (and everything sized off of
+       it: .landing__face-wrap's width, and the arc text box and font-size
+       that are a percentage of that) grow past what the width can hold,
+       pushing the arc text off both edges of the viewport. */
+    height: clamp(340px, min(50vh, 46vw), 760px);
+  }
+
+  .landing__face-wrap {
+    margin-top: -13vh;
+  }
+}
+
+/* Extra small phones: vh alone runs too big on a short, narrow viewport
+   (the vh term isn't checked against available width), so this switches
+   to a vw-driven formula instead. Must come after the base .landing__face
+   rule above — same selector, so source order decides the tie, and a
+   media query gains no specificity of its own to win out of turn. */
+@media (max-width: 390px) {
+  .landing__face {
+    height: clamp(300px, 85vw, 460px);
+  }
+
+  .landing__face-wrap {
+    margin-top: -11vh;
+  }
+}
+
 .landing__face-img {
   position: relative;
   z-index: 2;
   height: 100%;
-  width: auto;
+  width: 100%;
+  object-fit: contain;
   display: block;
-  user-select: none;
   -webkit-user-drag: none;
 }
 

@@ -5,7 +5,9 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: var(--blue);
+  /* Matches ROUTE_COLORS['/contact'] in Landing.tsx — the expanding circle
+     that covers the screen right before navigating here. */
+  background-color: var(--red-dark);
   color: var(--text-dark);
 }
 
