@@ -10,8 +10,19 @@
   align-items: center;
   justify-content: center;
   background-color: var(--blue);
+  /* Tone-on-tone dot grain, not a new hue — keeps the otherwise-empty blue
+     field from reading as unfinished without competing with the face/plate
+     for attention. Pure background-image, no extra element or asset. */
+  background-image: radial-gradient(rgba(32, 6, 198, 0.14) 1px, transparent 1.2px);
+  background-size: 22px 22px;
   position: relative;
   overflow: hidden;
+  /* The pointer itself is a fork on this page (cursor set inline in
+     Landing.tsx, not here — css-loader tries to resolve a CSS url()
+     against the module graph, not the public/ root the way a JSX src
+     attribute does, so `cursor: url('/icons/...')` fails to compile).
+     Set once on this root element and left to inherit everywhere — over
+     the face, the icons, mid-drag — rather than repeated per element. */
   /* Nothing here is meant to be selected or dragged as native content —
      icons and the face image are dragged via custom pointer handling
      instead, and highlighting text while dragging across the page is
@@ -20,6 +31,32 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   -webkit-touch-callout: none;
+}
+
+/* ── Signature ────────────────────────────────────────── */
+/* Quiet corner mark, not a headline eyebrow — anchors the otherwise-empty
+   top of the viewport without competing with the centered arc headline
+   below it. Same yellow as the arc text, dialed down so it stays background
+   register; low z-index so the growing circle covers it like everything
+   else during navigation. */
+.landing__signature {
+  position: absolute;
+  top: clamp(20px, 4vh, 40px);
+  left: clamp(20px, 5vw, 40px);
+  z-index: 2;
+  font-family: 'Bayon', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 228, 92, 0.55);
+  pointer-events: none;
+}
+
+@media (max-width: 390px) {
+  .landing__signature {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
 }
 
 /* ── Heading ──────────────────────────────────────────── */
@@ -220,7 +257,6 @@
 .landing__icon-img {
   width: 104px;
   height: 104px;
-  cursor: grab;
   pointer-events: auto;
   filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
   transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
@@ -232,10 +268,6 @@
 .landing__icon-img--phone {
   width: 78px;
   height: 78px;
-}
-
-.landing__icon-img:active {
-  cursor: grabbing;
 }
 
 .landing__icon-label {
@@ -329,7 +361,6 @@
   align-items: center;
   justify-content: center;
   filter: drop-shadow(0 16px 48px rgba(0, 0, 0, 0.18));
-  cursor: default;
 }
 
 /* Bigger screens: bigger head, nudged up further (more negative margin,

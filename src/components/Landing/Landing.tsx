@@ -139,9 +139,14 @@ const Landing: React.FC = () => {
   return (
     <div
       className={`landing landing--${phase}`}
-      style={{ ['--circle-color' as any]: circleColor }}
+      style={{
+        ['--circle-color' as any]: circleColor,
+        cursor: "url('/icons/fork-cursor.png') 3 5, auto",
+      }}
     >
       <div className="landing__circle" />
+
+      <div className="landing__signature">Kynara Fernandes</div>
 
       <div className="landing__face-wrap">
         {/* Sibling of .landing__face, not a child: .landing__face is what

@@ -64,6 +64,21 @@
   backface-visibility: hidden;
 }
 
+/* Below ~640px, --timeline-item-width's 300px floor is most of the
+   viewport, so the corner/edge positions above have nowhere left to sit
+   clear of the text column — every scene was built assuming room on
+   either side of it. Dimming the whole backdrop (not each image, which
+   would fight the per-image enter animations already driving opacity to
+   1) turns it into a quiet watermark behind the text instead of a
+   same-strength competitor for attention; the multiply is on the
+   .resume__scene parent so it compounds with each image's own animated
+   opacity rather than overriding it. */
+@media (max-width: 640px) {
+  .resume__scene {
+    opacity: 0.3;
+  }
+}
+
 /* Protects the text column: solid over where title/date/description
    render, fading out before the scene imagery starts. Only spans the
    vertical band text actually occupies (roughly 34%-69% of viewport
@@ -87,9 +102,13 @@
 }
 
 /* Iowa State — campanile rises straight up bottom-right, its base
-   slightly off-screen. Cy hangs upside-down at top-center, dropped in
-   from directly above — since cy.png is him mid-stride, inverted he
-   reads as walking along the top edge like it's the ceiling. The
+   slightly off-screen. Cy hangs upside-down top-right, dropped in from
+   directly above — since cy.png is him mid-stride, inverted he reads as
+   walking along the top edge like it's the ceiling. Parked to the side
+   (not top-center, where he used to sit) so he clears both the selected
+   item's own title and the next item's peeking label — the title/meta
+   row runs the full top ~22% of the viewport, at full opacity whether
+   selected or peeking, so nothing up there can be centered over it. The
    wordmark slides in bottom-left at a fixed 60° tilt and stays there. */
 .resume__scene-img--isu-campanile {
   bottom: -3vh;
@@ -98,9 +117,9 @@
 }
 
 .resume__scene-img--isu-cy {
-  top: 2vh;
-  left: 50%;
-  width: clamp(120px, 11vw, 190px);
+  top: 1vh;
+  right: 9vw;
+  width: clamp(90px, 8vw, 150px);
 }
 
 .resume__scene-img--isu-logo {
@@ -180,20 +199,23 @@
 }
 
 /* Single-logo companies — one asset, so it gets to be confident: large,
-   vertically centered on the open right side of the page. Bottom-right
-   for Critical Tinkers instead, so the three don't all read identically. */
+   but parked in the bottom third of the page like every other scene's
+   imagery, not vertically centered — centered placement used to run the
+   logo right through the description text, which occupies the same
+   22%-69% vertical band by design (see .resume__text-scrim). Bayada
+   bottom-right, Workiva bottom-left, Critical Tinkers bottom-right at a
+   different depth, so the three don't all read identically. */
 .resume__scene-img--bayada-logo {
-  top: 50%;
-  right: 5vw;
-  width: clamp(260px, 26vw, 440px);
-  transform: translateY(-50%);
+  bottom: 5vh;
+  right: 6vw;
+  width: clamp(200px, 20vw, 340px);
+  rotate: -3deg;
 }
 
 .resume__scene-img--workiva-logo {
-  top: 50%;
-  right: 5vw;
-  width: clamp(280px, 28vw, 480px);
-  transform: translateY(-50%);
+  bottom: -1vh;
+  left: -1vw;
+  width: clamp(260px, 26vw, 440px);
 }
 
 .resume__scene-img--ct-logo {
@@ -203,11 +225,11 @@
 }
 
 .resume__scene--bayada.resume__scene--enter .resume__scene-img--bayada-logo {
-  animation: resumeSceneRiseCentered 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+  animation: resumeSceneRise 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
 }
 
 .resume__scene--workiva.resume__scene--enter .resume__scene-img--workiva-logo {
-  animation: resumeSceneRiseCentered 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+  animation: resumeCaseysLogoIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
 }
 
 .resume__scene--ct.resume__scene--enter .resume__scene-img--ct-logo {
@@ -217,13 +239,6 @@
 @keyframes resumeSceneRise {
   from { opacity: 0; transform: translateY(20px) scale(0.94); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-/* Same rise, but keeps the permanent translateY(-50%) centering intact
-   through the animation instead of being overwritten by it. */
-@keyframes resumeSceneRiseCentered {
-  from { opacity: 0; transform: translateY(-50%) translateY(20px) scale(0.94); }
-  to   { opacity: 1; transform: translateY(-50%) translateY(0) scale(1); }
 }
 
 /* In from the bottom-left at a fixed 60° tilt, and stays at that angle. */
@@ -238,17 +253,17 @@
   }
 }
 
-/* Drops straight down from off-screen top, centered, upside-down the
-   whole way — cy.png is him mid-stride, so inverted he reads as walking
-   along the top edge like it's the ceiling. */
+/* Drops straight down from off-screen top, upside-down the whole way —
+   cy.png is him mid-stride, so inverted he reads as walking along the
+   top edge like it's the ceiling. */
 @keyframes resumeIsuCyIn {
   from {
     opacity: 0;
-    transform: translate(-50%, -160%) rotate(180deg);
+    transform: translateY(-160%) rotate(180deg);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, 0) rotate(180deg);
+    transform: translateY(0) rotate(180deg);
   }
 }
 
