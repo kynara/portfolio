@@ -159,7 +159,7 @@ const Landing: React.FC = () => {
           </defs>
           <text textAnchor="middle">
             <textPath href="#landing-head-arc" startOffset="50%">
-              YOU ARE WHAT YOU EAT
+              HI, I'M KYNARA!
             </textPath>
           </text>
         </svg>

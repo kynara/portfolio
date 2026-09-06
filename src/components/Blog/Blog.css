@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Bayon&display=swap');
+
 .page {
   min-height: 100vh;
   width: 100%;
@@ -8,31 +10,98 @@
   background: var(--bg-page);
 }
 
-.page__content {
+.page--blog {
+  position: relative;
+  overflow: hidden;
+  /* Same tone-on-tone dot grain as the landing page, tuned for the dark
+     ground here — one quiet texture motif reused across the site instead
+     of a flat, unfinished-looking fill. */
+  background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+/* ── Recipe card ──────────────────────────────────────────
+   Stage 1 of the blog roadmap is still "coming soon", but it's built as
+   an actual index card — tilted, punch-holed, pinned at the corner —
+   so it already speaks the physical, flip-through-recipe-cards language
+   stage 3 will formalize, instead of being a generic placeholder that
+   gets thrown away later. */
+.blog__card {
+  position: relative;
+  z-index: 1;
+  width: min(420px, 88vw);
+  background: var(--yellow-bg);
+  border-radius: 6px;
+  padding: 3rem 2.25rem 2.25rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.2rem;
-  animation: fadeSlideUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  gap: 0.6rem;
+  text-align: center;
+  transform: rotate(-2.5deg);
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.35);
+  animation: blogCardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@keyframes fadeSlideUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes blogCardIn {
+  from { opacity: 0; transform: rotate(-2.5deg) translateY(24px) scale(0.96); }
+  to   { opacity: 1; transform: rotate(-2.5deg) translateY(0) scale(1); }
 }
 
-.page__title {
+.blog__punch {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--bg-page);
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.4);
+}
+
+.blog__pin {
+  position: absolute;
+  top: -38px;
+  left: -28px;
+  width: 118px;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.35));
+}
+
+.blog__eyebrow {
+  margin: 0.5rem 0 0;
+  font-family: 'Bayon', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--red-dark);
+}
+
+.blog__title {
+  margin: 0;
   font-family: 'Fraunces', serif;
-  font-size: clamp(3rem, 10vw, 6rem);
-  color: var(--red);
-  letter-spacing: 0.02em;
+  font-style: italic;
+  font-size: clamp(2.75rem, 9vw, 3.75rem);
+  color: var(--blue-dark);
+  letter-spacing: 0.01em;
 }
 
-.page__status {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 1rem;
-  color: var(--text-muted);
+.blog__status {
+  margin: 0;
+  font-family: 'Bayon', sans-serif;
+  font-size: 0.85rem;
   letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--red);
 }
 
-
+.blog__teaser {
+  margin: 0 0 0.75rem;
+  max-width: 32ch;
+  font-family: 'Fraunces', serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #3d4655;
+}

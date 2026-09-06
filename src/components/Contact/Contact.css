@@ -1,72 +1,293 @@
-@import url('https://fonts.googleapis.com/css2?family=Bayon&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bayon&family=Caveat:wght@500;600;700&display=swap');
 
+/* ── Page shell ───────────────────────────────────────── */
 .contact {
+  --contact-ink: #33303e;
+  --contact-ink-soft: rgba(51, 48, 62, 0.4);
+  --contact-ink-faint: rgba(51, 48, 62, 0.22);
+  --contact-offwhite: #f4efe2;
+  /* Real airmail envelopes were often a light blue-grey tissue paper —
+     fits the red/blue stripe more authentically than plain kraft tan. */
+  --contact-envelope-bg: #d7e0ea;
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  padding: 2rem;
+  overflow: hidden;
   /* Matches ROUTE_COLORS['/contact'] in Landing.tsx — the expanding circle
      that covers the screen right before navigating here. */
   background-color: var(--red-dark);
-  color: var(--text-dark);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1.2px);
+  background-size: 22px 22px;
 }
 
-.contact__container {
-  background: white;
-  padding: 3rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
-  width: 90%;
-  font-family: 'Fraunces', serif;
+/* ── The postcard ─────────────────────────────────────── */
+.contact__postcard {
+  position: relative;
+  width: min(640px, 92vw);
+  aspect-ratio: 3 / 2;
+  background: var(--contact-offwhite);
+  border-radius: 3px;
+  box-shadow:
+    0 0 0 1px rgba(51, 48, 62, 0.12),
+    0 24px 40px rgba(0, 0, 0, 0.35);
+  padding: 1.75rem 1.9rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  transform: rotate(-1.2deg);
+  animation: contactPostcardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  /* Lets the stamp's clamp(...,16cqw,...) sizing below reference this
+     card's own width, not the viewport's. */
+  container-type: inline-size;
 }
 
-.contact__container h1 {
-  margin-bottom: 2rem;
-  font-family: 'Fraunces', serif;
-  color: var(--blue-dark);
+/* The red/blue "airmail" candy-cane stripe real postcards and airmail
+   envelopes print right at the edge. Built as a masked gradient frame,
+   not a border-image: border-image ignores border-radius in enough
+   browsers to matter, while a padding-box/border-box mask difference
+   clips cleanly to the rounded corners everywhere. The stripe pattern
+   fills the whole element; the mask punches the inside back out,
+   leaving only the frame. Postcard-only, same as the stamp — turned
+   off on mobile (see the media query), where contact__postcard is just
+   a wrapper around the letter and envelope, not a card itself. */
+.contact__postcard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 3px;
+  padding: 7px;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--red-dark) 0 10px,
+    var(--contact-offwhite) 10px 20px,
+    var(--blue-dark) 20px 30px,
+    var(--contact-offwhite) 30px 40px
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes contactPostcardIn {
+  from { opacity: 0; transform: rotate(-1.2deg) translateY(24px) scale(0.96); }
+  to   { opacity: 1; transform: rotate(-1.2deg) translateY(0) scale(1); }
+}
+
+/* No-op wrapper on desktop — display:contents removes it from the box
+   model entirely so contact__postcard-label and the form stay direct
+   flex children of contact__postcard, exactly as if this div weren't
+   there. Below the mobile breakpoint it becomes a real block (the
+   letter itself); see the media query. */
+.contact__letter-sheet {
+  display: contents;
+}
+
+/* ── Envelope (mobile only) ───────────────────────────────
+   Hidden entirely on desktop, where the postcard doesn't need it — see
+   the media query for what this actually looks like. */
+.contact__envelope-footer {
+  display: none;
+}
+
+.contact__postcard-label {
+  margin: 0 0 0.9rem;
+  font-family: 'Bayon', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
   text-align: center;
-  font-size: 2.5rem;
+  color: var(--contact-ink-soft);
 }
 
 .contact__form {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  font-family: 'Fraunces', serif;
+  flex: 1;
+  min-height: 0;
 }
 
-.contact__form label {
+.contact__postcard-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  gap: 1.5rem;
+}
+
+/* ── Divider ──────────────────────────────────────────── */
+.contact__divider {
+  width: 1px;
+  align-self: stretch;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--contact-ink-faint) 0 6px,
+    transparent 6px 12px
+  );
+}
+
+/* ── Left half: the message ───────────────────────────── */
+.contact__message-side {
+  flex: 1.15;
+  min-width: 0;
   display: flex;
   flex-direction: column;
+}
+
+.contact__salutation {
+  margin: 0 0 0.4rem;
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 4vw, 1.9rem);
+  color: var(--contact-ink);
+}
+
+.contact__message {
+  flex: 1;
+  min-height: 60px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
+  font-family: 'Caveat', cursive;
+  font-weight: 500;
+  font-size: clamp(1.1rem, 2.6vw, 1.35rem);
+  line-height: 1.5;
+  color: var(--contact-ink);
+}
+
+.contact__message::placeholder {
+  color: var(--contact-ink-soft);
+}
+
+.contact__signoff-row {
+  display: flex;
+  align-items: baseline;
   gap: 0.5rem;
-  font-family: 'Fraunces', serif;
+  margin-top: 0.5rem;
+}
+
+.contact__signoff {
+  flex: none;
+  font-family: 'Caveat', cursive;
+  font-weight: 600;
+  font-size: clamp(1.1rem, 2.6vw, 1.35rem);
+  color: var(--contact-ink);
+}
+
+.contact__reply-line {
+  margin-top: 0.6rem;
+}
+
+/* ── Right half: stamp + address lines ────────────────── */
+.contact__address-side {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.contact__stamp-area {
+  position: relative;
+  align-self: flex-end;
+  width: clamp(76px, 21cqw, 104px);
+  margin: -1.8rem 0 1.6rem;
+}
+
+.contact__stamp-img {
+  display: block;
+  width: clamp(76px, 21cqw, 104px);
+  rotate: -2deg;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.3));
+}
+
+.contact__postmark {
+  position: absolute;
+  top: 55%;
+  right: 60%;
+  width: clamp(46px, 13cqw, 62px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1.5px solid var(--contact-ink-soft);
+  transform: rotate(-12deg);
+}
+
+.contact__postmark::before,
+.contact__postmark::after {
+  content: '';
+  position: absolute;
+  left: -14px;
+  right: -14px;
+  height: 1.5px;
+  background: var(--contact-ink-soft);
+}
+
+.contact__postmark::before { top: 38%; }
+.contact__postmark::after { top: 58%; }
+
+.contact__address-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.contact__address-line {
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--contact-ink-faint);
+  font-family: 'Caveat', cursive;
+  font-weight: 500;
+  font-size: clamp(1rem, 2.4vw, 1.2rem);
+  color: var(--contact-ink);
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+.contact__address-line--fixed {
   font-weight: 600;
 }
 
-.contact__form input,
-.contact__form textarea {
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-family: 'Fraunces', serif;
-  resize: vertical;
+.contact__address-line--empty {
+  min-height: 1.2rem;
 }
 
-.contact__form input:focus,
-.contact__form textarea:focus {
+.contact__blank {
+  flex: 1;
+  min-width: 0;
+  border: none;
   outline: none;
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(12, 93, 149, 0.18);
+  background: transparent;
+  padding: 0;
+  font-family: 'Caveat', cursive;
+  font-size: inherit;
+  color: var(--contact-ink);
+  transition: color 0.2s ease;
+}
+
+.contact__blank::placeholder {
+  color: var(--contact-ink-soft);
+}
+
+.contact__blank:focus {
+  color: var(--red-dark);
 }
 
 .contact__error {
-  min-height: 1rem;
-  margin: 0;
-  font-family: 'Fraunces', serif;
-  font-size: 0.9rem;
+  min-height: 0;
+  margin: 0.2rem 0 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.72rem;
   color: var(--red-dark);
+}
+
+.contact__error--right {
+  text-align: right;
 }
 
 .contact__actions {
@@ -77,17 +298,137 @@
   gap: 1rem;
 }
 
+/* Below this, the postcard's two-column back — message on one side,
+   stamp and address lines on the other — no longer has room to read as
+   a postcard; a stacked version of the same two columns just looks like
+   a form with a stray dashed line through it. Below this width the
+   metaphor switches instead: a single-column letter (contact__letter-sheet,
+   a no-op on desktop) sitting on top of a drawn envelope
+   (contact__envelope-footer, hidden on desktop), which is what a letter
+   this size actually looks like. Only the postcard-specific decoration
+   (the "POSTCARD" label, the divider, the postmark, the fixed address
+   line and its blank neighbors) gets hidden — the real fields
+   (message, name, email, actions) are the same DOM nodes in both
+   layouts, just restyled, so there's only ever one form. */
+@media (max-width: 560px) {
+  .contact__postcard {
+    width: min(380px, 88vw);
+    aspect-ratio: auto;
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    display: block;
+    /* Rotating the letter below needs somewhere to swing into without
+       getting clipped by the card's own box. */
+    overflow: visible;
+  }
+
+  .contact__letter-sheet {
+    display: block;
+    position: relative;
+    z-index: 2;
+    background: var(--contact-offwhite);
+    border-radius: 6px;
+    padding: 1.6rem 1.5rem 1.3rem;
+    box-shadow: 0 20px 32px rgba(0, 0, 0, 0.35);
+    /* Tilted and pulled down over the envelope below (negative margin,
+       not absolute positioning — this way the card's overall height
+       still just falls out of normal flow instead of having to be
+       computed by hand) so it reads as a letter caught mid-pull rather
+       than a card that happens to sit above a footer graphic. */
+    transform: rotate(-3deg);
+    transform-origin: bottom center;
+    margin: 0 0 -30px;
+  }
+
+  .contact__postcard-label,
+  .contact__divider,
+  .contact__address-side,
+  .contact__postcard::before {
+    display: none;
+  }
+
+  .contact__postcard-body {
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .contact__message-side {
+    flex: none;
+  }
+
+  .contact__message {
+    min-height: 90px;
+  }
+
+  /* ── The envelope itself ──────────────────────────────
+     Sits behind the letter (z-index 1 vs. the letter's 2) and a touch
+     narrower, so the tilted letter above visibly overhangs its edges —
+     the "sticking out of an envelope" read comes from that mismatch,
+     not from the flap alone. */
+  .contact__envelope-footer {
+    display: block;
+    position: relative;
+    z-index: 1;
+    width: 94%;
+    margin: 0 auto;
+    height: clamp(76px, 24vw, 104px);
+    background: var(--contact-envelope-bg);
+    border-radius: 4px;
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+  }
+
+  /* Same airmail stripe as the postcard, same masked-gradient technique
+     (see contact__postcard::before) — just a thinner frame to suit the
+     smaller box, and its "white" gap is the envelope's own blue-grey
+     instead of the off-white the postcard/letter use, so the stripe
+     reads as printed on this surface rather than a mismatched insert. */
+  .contact__envelope-footer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+    padding: 5px;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--red-dark) 0 8px,
+      var(--contact-envelope-bg) 8px 16px,
+      var(--blue-dark) 16px 24px,
+      var(--contact-envelope-bg) 24px 32px
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  .contact__envelope-flap {
+    position: absolute;
+    inset: 0;
+    clip-path: polygon(0 0, 50% 72%, 100% 0);
+    background: rgba(0, 0, 0, 0.16);
+  }
+}
+
+/* ── Success state ────────────────────────────────────── */
 .contact__success {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.25rem;
+  justify-content: center;
+  gap: 1.1rem;
   text-align: center;
 }
 
-.contact__success p {
+.contact__success .contact__salutation {
+  font-size: clamp(2.1rem, 6vw, 2.8rem);
+}
+
+.contact__note {
   margin: 0;
-  font-family: 'Fraunces', serif;
-  color: var(--blue-dark);
-  font-size: 1.1rem;
+  font-family: 'Caveat', cursive;
+  font-weight: 500;
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  color: var(--contact-ink);
 }
