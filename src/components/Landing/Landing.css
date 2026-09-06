@@ -110,6 +110,7 @@
 @media (min-width: 769px) {
   .landing__head-arc-text {
     width: 150%;
+    top: -37%;
   }
 }
 
