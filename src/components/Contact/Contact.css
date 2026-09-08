@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bayon&family=Caveat:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bayon&family=Meow+Script&display=swap');
 
 /* ── Page shell ───────────────────────────────────────── */
 .contact {
@@ -138,7 +138,7 @@
 
 .contact__salutation {
   margin: 0 0 0.4rem;
-  font-family: 'Caveat', cursive;
+  font-family: 'Meow Script', cursive;
   font-weight: 700;
   font-size: clamp(1.5rem, 4vw, 1.9rem);
   color: var(--contact-ink);
@@ -154,7 +154,7 @@
   outline: none;
   resize: none;
   background: transparent;
-  font-family: 'Caveat', cursive;
+  font-family: 'Meow Script', cursive;
   font-weight: 500;
   font-size: clamp(1.1rem, 2.6vw, 1.35rem);
   line-height: 1.5;
@@ -174,7 +174,7 @@
 
 .contact__signoff {
   flex: none;
-  font-family: 'Caveat', cursive;
+  font-family: 'Meow Script', cursive;
   font-weight: 600;
   font-size: clamp(1.1rem, 2.6vw, 1.35rem);
   color: var(--contact-ink);
@@ -239,7 +239,7 @@
 .contact__address-line {
   padding-bottom: 0.35rem;
   border-bottom: 1px solid var(--contact-ink-faint);
-  font-family: 'Caveat', cursive;
+  font-family: 'Meow Script', cursive;
   font-weight: 500;
   font-size: clamp(1rem, 2.4vw, 1.2rem);
   color: var(--contact-ink);
@@ -264,7 +264,7 @@
   outline: none;
   background: transparent;
   padding: 0;
-  font-family: 'Caveat', cursive;
+  font-family: 'Meow Script', cursive;
   font-size: inherit;
   color: var(--contact-ink);
   transition: color 0.2s ease;
@@ -427,7 +427,7 @@
 
 .contact__note {
   margin: 0;
-  font-family: 'Caveat', cursive;
+  font-family: 'Meow Script', cursive;
   font-weight: 500;
   font-size: clamp(1.2rem, 3vw, 1.5rem);
   color: var(--contact-ink);
