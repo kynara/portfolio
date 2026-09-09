@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Landing.css';
 
@@ -24,12 +24,52 @@ const ICONS: IconData[] = [
   { id: 'phone', label: 'contact me', path: '/contact', src: '/icons/fax.png' },
 ];
 
+// Smooth continuous wave for the side panels' inner edge, built from real
+// measured pixel width/height (see the ResizeObserver in the component)
+// with viewBox set to those same numbers, so 1 SVG unit = 1px. A true
+// sine curve, not a chain of alternating semicircle arcs — two same-radius
+// circles curving opposite ways can meet with matching position AND slope
+// and still read as a pinched "hourglass" waist, because their curvature
+// flips instantly at the join. A sine's curvature changes continuously,
+// so there's no seam for the eye to catch on.
+const buildWavePath = (width: number, height: number, side: 'left' | 'right') => {
+  if (!width || !height) return '';
+  const amplitude = width * 0.1;
+  const center = side === 'left' ? width - amplitude : amplitude;
+  const outerX = side === 'left' ? 0 : width;
+  const period = height / 3; // 3 full waves top-to-bottom
+  const steps = Math.max(24, Math.round(height / 6));
+  const points: string[] = [];
+  for (let i = 0; i <= steps; i++) {
+    const y = (i / steps) * height;
+    const x = center + amplitude * Math.sin((2 * Math.PI * y) / period);
+    points.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+  }
+  return `M ${outerX},0 L ${points.join(' L ')} L ${outerX},${height} Z`;
+};
+
 const Landing: React.FC = () => {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>('idle');
   const [dragGuidePath, setDragGuidePath] = useState<string | null>(null);
   const [circleColor, setCircleColor] = useState<string>(ROUTE_COLORS.default);
   const mouthRef = useRef<HTMLDivElement>(null);
+  const sidePanelRef = useRef<SVGSVGElement>(null);
+  const [panelSize, setPanelSize] = useState({ width: 0, height: 0 });
+
+  // Both side panels share the same CSS-driven width/height, so measuring
+  // just the left one and reusing it for the right avoids a second
+  // observer for a value that's always identical anyway.
+  useEffect(() => {
+    const node = sidePanelRef.current;
+    if (!node) return;
+    const observer = new ResizeObserver((entries) => {
+      const { width, height } = entries[0].contentRect;
+      setPanelSize({ width, height });
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
   // Create refs for each icon statically since ICONS length is static
   const iconRefs = [
@@ -144,9 +184,34 @@ const Landing: React.FC = () => {
         cursor: "url('/icons/fork-cursor.png') 3 5, auto",
       }}
     >
-      <div className="landing__circle" />
+      {/* Desktop-only (see the min-width media query) — fills the wide
+          side gutters that open up once the centered face/plate stop
+          growing with the viewport. Plain yellow "paper" panels, with a
+          smooth sine-wave inner edge (built in buildWavePath from the
+          panel's own measured pixel size, not a stretched abstract
+          viewBox — see the comment there for why that distinction
+          matters here). Both panels reuse the same measured size since
+          their CSS width/height rules are identical; only the left one
+          carries the ResizeObserver ref. */}
+      <svg
+        ref={sidePanelRef}
+        className="landing__side-panel landing__side-panel--left"
+        viewBox={`0 0 ${panelSize.width || 1} ${panelSize.height || 1}`}
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path d={buildWavePath(panelSize.width, panelSize.height, 'left')} />
+      </svg>
+      <svg
+        className="landing__side-panel landing__side-panel--right"
+        viewBox={`0 0 ${panelSize.width || 1} ${panelSize.height || 1}`}
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path d={buildWavePath(panelSize.width, panelSize.height, 'right')} />
+      </svg>
 
-      <div className="landing__signature">Kynara Fernandes</div>
+      <div className="landing__circle" />
 
       <div className="landing__face-wrap">
         {/* Sibling of .landing__face, not a child: .landing__face is what

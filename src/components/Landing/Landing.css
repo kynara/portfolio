@@ -33,29 +33,35 @@
   -webkit-touch-callout: none;
 }
 
-/* ── Signature ────────────────────────────────────────── */
-/* Quiet corner mark, not a headline eyebrow — anchors the otherwise-empty
-   top of the viewport without competing with the centered arc headline
-   below it. Same yellow as the arc text, dialed down so it stays background
-   register; low z-index so the growing circle covers it like everything
-   else during navigation. */
-.landing__signature {
+/* ── Side panels ──────────────────────────────────────── */
+/* Hidden by default — only worth showing once the centered face/plate
+   composition (capped around 1050px) actually leaves visible gutters on
+   both sides; below that width there's no whitespace for these to fill. */
+.landing__side-panel {
+  display: none;
   position: absolute;
-  top: clamp(20px, 4vh, 40px);
-  left: clamp(20px, 5vw, 40px);
-  z-index: 2;
-  font-family: 'Bayon', sans-serif;
-  font-size: 13px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(255, 228, 92, 0.55);
+  top: 0;
+  height: 100%;
+  width: clamp(160px, 22vw, 380px);
+  fill: var(--yellow);
   pointer-events: none;
+  z-index: 0;
+  overflow: visible;
 }
 
-@media (max-width: 390px) {
-  .landing__signature {
-    font-size: 11px;
-    letter-spacing: 0.1em;
+.landing__side-panel--left {
+  left: 0;
+  filter: drop-shadow(8px 0 18px rgba(0, 0, 0, 0.28));
+}
+
+.landing__side-panel--right {
+  right: 0;
+  filter: drop-shadow(-8px 0 18px rgba(0, 0, 0, 0.28));
+}
+
+@media (min-width: 1100px) {
+  .landing__side-panel {
+    display: block;
   }
 }
 
